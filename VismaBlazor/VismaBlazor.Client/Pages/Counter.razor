@@ -1,19 +1,15 @@
-﻿@page "/counter"
+﻿@page "/Generator"
 @rendermode InteractiveWebAssembly
 
-<PageTitle>Counter</PageTitle>
+<PageTitle>Generator</PageTitle>
 
-<h1>Counter</h1>
+<RadzenStack Gap="2rem">
+    
 
-<p role="status">Current count: @currentCount</p>
+</RadzenStack>
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
 
 @code {
-    private int currentCount = 0;
 
-    private void IncrementCount()
-    {
-        currentCount++;
-    }
 }
