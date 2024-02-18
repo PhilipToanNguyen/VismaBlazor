@@ -1,0 +1,55 @@
+﻿@page "/Generator"
+@rendermode InteractiveWebAssembly
+
+<PageTitle>Generator</PageTitle>
+
+<div>
+    <RadzenCard class="text-center">
+        <div class="row">
+            <div class="col-md-12">
+                <h3 class="">Generator</h3>
+                <p>Trykk på legg til for å legge til skrive felt for NøkkelID</p>
+                <div class="row">
+                    @for (int i = 0; i < antall; i++)
+                    {
+                        <div class="col-md-12 p-2">
+                            <RadzenTextBox Placeholder="Skriv Nøkkel" style="width: 50%" />
+                            <RadzenButton Text="Fjern" ButtonStyle="ButtonStyle.Danger" Click="@Fjerninputfield" style="width: 5%" />
+                        </div>
+                    }
+
+                    <div class="col-md-12 p-2">
+                        <RadzenButton Text="Legg til" ButtonStyle="ButtonStyle.Secondary" Click="@Genererinputfield" style="width: 50%" />
+                    </div>
+
+                    <p>Vis du vil genere data uten nøkkelID skriv i feltet under </p>
+                    <div class="col-md-12 p-2">
+                        <RadzenTextBox Placeholder="Skriv antall brukere som skal genereres" style="width: 10%" />
+                    </div>
+
+                    <div class="col-md-12 p-2 text-center">
+                        <RadzenButton Text="Generer" ButtonStyle="ButtonStyle.Success" style="width: 50%" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </RadzenCard>
+</div>
+
+
+
+@code {
+    int antall = 0;
+    
+    void Genererinputfield()
+    {
+        antall++;
+    }
+
+    void Fjerninputfield()
+    {
+        antall--;
+    }
+   
+
+}

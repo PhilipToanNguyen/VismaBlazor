@@ -1,0 +1,50 @@
+﻿@page "/Resultat"
+@using Models
+
+<PageTitle>Resultat</PageTitle>
+
+<h1>Resultat</h1>
+
+@if (brukere == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table table-striped table-bordered table-hover table-dark">
+        <thead>
+            <tr>
+                <th scope="col">NøkkelID</th>
+                <th scope="col">Navn</th>
+                <th scope="col">Adresse</th>
+                <th scope="col">Telefon</th>
+                <th scope="col">Epost</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var bruker in brukere)
+            {
+                <tr>
+                    <th scope="row">@bruker.NøkkelID</th>
+                    <td>@bruker.Fornavn @bruker.Etternavn</td>
+                    <td>@bruker.Adresse</td>
+                    <td>@bruker.Telefon</td>
+                    <td>@bruker.Epost</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+
+    private Bruker[]? brukere;
+
+    protected override void OnInitialized()
+    {
+        brukere = BrukerController.HentBrukere();
+    }
+
+}
