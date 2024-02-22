@@ -1,4 +1,6 @@
 ﻿@page "/"
+@inject IConfiguration config
+@using Radzen
 @using Radzen.Blazor
 
 <PageTitle>Importer fil</PageTitle>
@@ -7,15 +9,67 @@
 Skal inneholde en knapp for å laste opp filer, og en knapp for å starte importen
 Denne skal også sende filen til serveren og genere data fra filen.
 Dataen skal så vises i resultat page som åpnes etter importen er ferdig.
+
+Tcorey er placeholder for de som er innlogget.
 *@
+<div class="d-flex justify-content-between form-control">
+<InputFile OnChange ="@LoadFiles" class="p-2" multiple accept =".json, .csv" />
+<button class="btn btn-primary " @onclick="(() => {})">Import</button>
+</div>
 
 
-
-
-
+@if (errors.Count > 0)
+{
+    <h2>Errors</h2>
+    <ul class="text-danger">
+        @foreach (var error in errors)
+        {
+            <li>@error</li>
+        }
+        </ul>
+}
 
 @code{
-    
+    private long maxFileSize = 1024 * 1024 * 3;  // 3MB
+    private int maxAllowedFiles = 1;
+    private List<string> errors = new();
 
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        errors.Clear();
+
+        if (e.FileCount > maxAllowedFiles)
+        {
+            errors.Add($"Error: Attempting to upload {e.FileCount} files, but only {maxAllowedFiles} files are allowed.");
+            return;
+        }
+
+        foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
+        {
+            try
+            {
+                string newFileName = Path.ChangeExtension(
+                  Path.GetRandomFileName(),
+                  Path.GetExtension(file.Name));
+
+                string path = Path.Combine(
+                    config.GetValue<string>("FileStorage")!,
+                    "Visma",
+                    newFileName);
+
+                Directory.CreateDirectory(Path.Combine(
+                        config.GetValue<string>("FileStorage")!,
+                    "Visma"));
+
+                await using FileStream fs = new(path, FileMode.Create);
+                await file.OpenReadStream(maxFileSize).CopyToAsync(fs);
+            }
+            catch (Exception ex)
+            {
+                errors.Add($"File: {file.Name} Error: {ex.Message}");
+            }
+        }
+
+   }
 
 }
