@@ -1,7 +1,11 @@
 ﻿@page "/"
 @inject IConfiguration config
+@using Newtonsoft.Json
 @using Radzen
 @using Radzen.Blazor
+@using System.IO
+@using VismaBlazor.Components.Data
+
 
 <PageTitle>Importer fil</PageTitle>
 
@@ -9,13 +13,14 @@
 Skal inneholde en knapp for å laste opp filer, og en knapp for å starte importen
 Denne skal også sende filen til serveren og genere data fra filen.
 Dataen skal så vises i resultat page som åpnes etter importen er ferdig.
-
-Tcorey er placeholder for de som er innlogget.
 *@
+
+
 <div class="d-flex justify-content-between form-control">
-<InputFile OnChange ="@LoadFiles" class="p-2" multiple accept =".json, .csv" />
-<button class="btn btn-primary " @onclick="(() => {})">Import</button>
+<InputFile OnChange="LoadFiles" />
+<button class="btn btn-primary" @onclick="@Import">Import</button> 
 </div>
+
 
 
 @if (errors.Count > 0)
@@ -29,47 +34,106 @@ Tcorey er placeholder for de som er innlogget.
         </ul>
 }
 
+@if (ansatte != null && ansatte.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Fornavn</th>
+                <th>Etternavn</th>
+                <th>E-post</th>
+                <th>Brukernavn</th>
+                <th>Passord</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ansatt in ansatte)
+            {
+                <tr>
+                    <td>@ansatt.Id</td>
+                    <td>@ansatt.Fornavn</td>
+                    <td>@ansatt.Etternavn</td>
+                    <td>@ansatt.EPost</td>
+                    <td>@ansatt.Brukernavn</td>
+                    <td>@ansatt.Passord</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+} 
+else
+{
+    <p>Ingen data å vise... </p>  
+}
+
 @code{
+
+
+    private List<Ansatte> ansatte;
     private long maxFileSize = 1024 * 1024 * 3;  // 3MB
-    private int maxAllowedFiles = 1;
     private List<string> errors = new();
+    private IBrowserFile? file;
 
     private async Task LoadFiles(InputFileChangeEventArgs e)
     {
-        errors.Clear();
+        file = e.File; 
+    }
 
-        if (e.FileCount > maxAllowedFiles)
+
+    private async Task<List<Ansatte>> File()
+    {
+        // Sjekker om filen er null. Returnerer tom liste, hvis den er tom.
+        if (file is null)
         {
-            errors.Add($"Error: Attempting to upload {e.FileCount} files, but only {maxAllowedFiles} files are allowed.");
-            return;
+            return new List<Ansatte>();
         }
 
-        foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
+        //Try catch. Åpner strømmen og kopierer innholdet ved bruk av memorystream midlertidig.
+        try
         {
-            try
+            using (MemoryStream memoryStream = new MemoryStream())
             {
-                string newFileName = Path.ChangeExtension(
-                  Path.GetRandomFileName(),
-                  Path.GetExtension(file.Name));
+                await file.OpenReadStream().CopyToAsync(memoryStream);
+                memoryStream.Position = 0;
 
-                string path = Path.Combine(
-                    config.GetValue<string>("FileStorage")!,
-                    "Visma",
-                    newFileName);
+                //Deserialisering av JSON ved bruk av streamreader til å lese json innhold fra memorystreamen.
+                //Vi bruker Newtonsoft.Json- biblioteket for å deserialisere til en liste og returneres.
+                using (StreamReader reader = new StreamReader(memoryStream))
+                {
+                    var json = await reader.ReadToEndAsync();
+                    ansatte = JsonConvert.DeserializeObject<List<Ansatte>>(json);
 
-                Directory.CreateDirectory(Path.Combine(
-                        config.GetValue<string>("FileStorage")!,
-                    "Visma"));
+                    return ansatte;
+                }
 
-                await using FileStream fs = new(path, FileMode.Create);
-                await file.OpenReadStream(maxFileSize).CopyToAsync(fs);
-            }
-            catch (Exception ex)
-            {
-                errors.Add($"File: {file.Name} Error: {ex.Message}");
             }
         }
+        catch (Exception ex)
+        {
+            errors.Add($"File: {file.Name} Error: {ex.Message}");
+            throw;
+        }
 
-   }
+
+    } //3
+
+    private async Task Import()
+    {
+        Console.WriteLine("Du trykker på import");
+        try
+        {
+            ansatte = await File(); //Metoden blir brukt i denne. Det skal kunne leses og desrialiseres en bestemt fil. 
+            
+
+        }
+        catch (Exception ex)
+        {
+            errors.Add($"Error: {ex.Message}");
+            throw;
+        }
+    } //2
+
+
 
 }
