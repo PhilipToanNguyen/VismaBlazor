@@ -1,5 +1,11 @@
 ﻿@page "/"
+@inject IConfiguration config
+@using Newtonsoft.Json
+@using Radzen
 @using Radzen.Blazor
+@using System.IO
+@using VismaBlazor.Components.Data
+
 
 <PageTitle>Importer fil</PageTitle>
 
@@ -10,12 +16,124 @@ Dataen skal så vises i resultat page som åpnes etter importen er ferdig.
 *@
 
 
+<div class="d-flex justify-content-between form-control">
+<InputFile OnChange="LoadFiles" />
+<button class="btn btn-primary" @onclick="@Import">Import</button> 
+</div>
 
 
 
+@if (errors.Count > 0)
+{
+    <h2>Errors</h2>
+    <ul class="text-danger">
+        @foreach (var error in errors)
+        {
+            <li>@error</li>
+        }
+        </ul>
+}
+
+@if (ansatte != null && ansatte.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Fornavn</th>
+                <th>Etternavn</th>
+                <th>E-post</th>
+                <th>Brukernavn</th>
+                <th>Passord</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ansatt in ansatte)
+            {
+                <tr>
+                    <td>@ansatt.Id</td>
+                    <td>@ansatt.Fornavn</td>
+                    <td>@ansatt.Etternavn</td>
+                    <td>@ansatt.EPost</td>
+                    <td>@ansatt.Brukernavn</td>
+                    <td>@ansatt.Passord</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+} 
+else
+{
+    <p>Ingen data å vise... </p>  
+}
 
 @code{
-    
+
+
+    private List<Ansatte> ansatte;
+    private long maxFileSize = 1024 * 1024 * 3;  // 3MB
+    private List<string> errors = new();
+    private IBrowserFile? file;
+
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        file = e.File; 
+    }
+
+
+    private async Task<List<Ansatte>> File()
+    {
+        // Sjekker om filen er null. Returnerer tom liste, hvis den er tom.
+        if (file is null)
+        {
+            return new List<Ansatte>();
+        }
+
+        //Try catch. Åpner strømmen og kopierer innholdet ved bruk av memorystream midlertidig.
+        try
+        {
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                await file.OpenReadStream().CopyToAsync(memoryStream);
+                memoryStream.Position = 0;
+
+                //Deserialisering av JSON ved bruk av streamreader til å lese json innhold fra memorystreamen.
+                //Vi bruker Newtonsoft.Json- biblioteket for å deserialisere til en liste og returneres.
+                using (StreamReader reader = new StreamReader(memoryStream))
+                {
+                    var json = await reader.ReadToEndAsync();
+                    ansatte = JsonConvert.DeserializeObject<List<Ansatte>>(json);
+
+                    return ansatte;
+                }
+
+            }
+        }
+        catch (Exception ex)
+        {
+            errors.Add($"File: {file.Name} Error: {ex.Message}");
+            throw;
+        }
+
+
+    } //3
+
+    private async Task Import()
+    {
+        Console.WriteLine("Du trykker på import");
+        try
+        {
+            ansatte = await File(); //Metoden blir brukt i denne. Det skal kunne leses og desrialiseres en bestemt fil. 
+            
+
+        }
+        catch (Exception ex)
+        {
+            errors.Add($"Error: {ex.Message}");
+            throw;
+        }
+    } //2
+
 
 
 }
