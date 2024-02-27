@@ -1,0 +1,57 @@
+﻿@page "/Resultat"
+@using Models
+@inject VismaBlazor.HttpClientPost HttpClientPost
+@inject NavigationManager NavigationManager
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@attribute [StreamRendering]
+
+
+<PageTitle>Resultat</PageTitle>
+
+<h1>Resultat</h1>
+
+@if (BrukerRes == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table table-striped table-bordered table-hover table-dark">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Navn</th>
+                <th scope="col">Etternavn</th>
+                <th scope="col">Telefon</th>
+                <th scope="col">Brukernavn</th>
+                <th scope="col">Epost</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var bruker in BrukerRes)
+            {
+                <tr>
+                    <th scope="row">@bruker.Id</th>
+                    <td>@bruker.Fornavn</td>
+                    <td>@bruker.Etternavn</td>
+                    <td>@bruker.Tlf</td>
+                    <td>@bruker.Brukernavn</td>
+                    <td>@bruker.Epost</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+
+    private List<BrukerResponse>? BrukerRes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        BrukerRes = HttpClientPost.HentBrukerResponse();
+    }
+
+}

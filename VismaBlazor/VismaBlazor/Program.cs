@@ -1,11 +1,15 @@
-using VismaBlazor.Client.Pages;
+
 using VismaBlazor.Components;
+using VismaBlazor;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
-    .AddInteractiveWebAssemblyComponents();
+    .AddInteractiveWebAssemblyComponents()
+    .AddInteractiveServerComponents();
+
+builder.Services.AddScoped<HttpClientPost>();
 
 var app = builder.Build();
 
@@ -28,6 +32,8 @@ app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(typeof(VismaBlazor.Client._Imports).Assembly);
+    .AddAdditionalAssemblies(typeof(VismaBlazor.Client._Imports).Assembly)
+    .AddInteractiveServerRenderMode();
+
 
 app.Run();

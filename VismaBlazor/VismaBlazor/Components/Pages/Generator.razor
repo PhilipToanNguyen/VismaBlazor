@@ -1,5 +1,13 @@
 ﻿@page "/Generator"
-@rendermode InteractiveWebAssembly
+@using Models
+@inject VismaBlazor.HttpClientPost HttpClientPost
+@inject NavigationManager NavigationManager
+@using Radzen.Blazor;
+@using Radzen;
+@using System;
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@attribute [StreamRendering]
+
 
 <PageTitle>Generator</PageTitle>
 
@@ -13,7 +21,7 @@
                     @for (int i = 0; i < antall; i++)
                     {
                         <div class="col-md-12 p-2">
-                            <RadzenTextBox Placeholder="Skriv Nøkkel" style="width: 50%" />
+                            <RadzenTextBox Placeholder="Skriv Nøkkel" Value="@id" style="width: 50%" />
                             <RadzenButton Text="Fjern" ButtonStyle="ButtonStyle.Danger" Click="@Fjerninputfield" style="width: 5%" />
                         </div>
                     }
@@ -28,7 +36,9 @@
                     </div>
 
                     <div class="col-md-12 p-2 text-center">
-                        <RadzenButton Text="Generer" ButtonStyle="ButtonStyle.Success" style="width: 50%" />
+                        
+                            <RadzenButton Text="Generer" ButtonStyle="ButtonStyle.Success" Click="@SendId" style="width: 50%" />
+                       
                     </div>
                 </div>
             </div>
@@ -40,15 +50,31 @@
 
 @code {
     int antall = 0;
-    
+
+    string id = "";
+
+    public IdList[]? idobject;
+
+
+    private async Task SendId()
+    {
+
+        await HttpClientPost.Post();
+        NavigationManager.NavigateTo("/Resultat");
+
+    }
+
+
+
     void Genererinputfield()
     {
-        antall++;
+         antall++;
     }
 
     void Fjerninputfield()
     {
-        antall--;
+            antall--;
+           
     }
    
 

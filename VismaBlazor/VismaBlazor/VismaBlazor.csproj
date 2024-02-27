@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\VismaBlazor.Client\VismaBlazor.Client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Radzen.Blazor" Version="4.24.7" />
   </ItemGroup>
 
