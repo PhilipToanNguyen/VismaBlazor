@@ -75,10 +75,7 @@ else
     private List<string> errors = new();
     private IBrowserFile? file;
 
-    private async Task LoadFiles(InputFileChangeEventArgs e)
-    {
-        file = e.File; 
-    }
+    private async Task LoadFiles(InputFileChangeEventArgs e) => file = e.File;
 
 
     private async Task<List<Ansatte>> File()
