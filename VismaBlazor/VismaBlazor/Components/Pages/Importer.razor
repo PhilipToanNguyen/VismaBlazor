@@ -1,10 +1,19 @@
 ﻿@page "/"
 @inject IConfiguration config
+@inject IJSRuntime JSRuntime;
+@using CsvHelper
 @using Newtonsoft.Json
 @using Radzen
 @using Radzen.Blazor
 @using System.IO
+@using System.Globalization
 @using VismaBlazor.Components.Data
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@attribute [StreamRendering]
+
+@using System;
+@using System.Collections.Generic;
+@using System.Linq;
 
 
 <PageTitle>Importer fil</PageTitle>
@@ -68,17 +77,57 @@ else
 }
 
 @code{
-
-
     private List<Ansatte> ansatte;
-    private long maxFileSize = 1024 * 1024 * 3;  // 3MB
+    private long maxFileSize = 1024 * 1024 * 3;  // 3MB  List<Ansatte> ansatteListe = new List<Ansatte>();
     private List<string> errors = new();
     private IBrowserFile? file;
 
-    private async Task LoadFiles(InputFileChangeEventArgs e) => file = e.File;
+    private async Task LoadFiles(InputFileChangeEventArgs e) => file = e.File; //1
 
 
-    private async Task<List<Ansatte>> File()
+
+    //Her blir CsvHelper blitt tatt i bruk via NuGET PacketManager. Stream -> CsvReader -> Visualiser.
+
+    private async Task<List<Ansatte>> FileCsv() //CSV
+    {
+
+        // Sjekker om filen er null. Returnerer tom liste, hvis den er tom.
+        if (file is null)
+        {
+            return new List<Ansatte>();
+        }
+
+        List<Ansatte> ansatteList = new List<Ansatte>();
+
+        try
+        {
+            using var stream = file.OpenReadStream();
+            using (var reader = new StreamReader(stream))
+            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+            {
+
+                while (await csv.ReadAsync()) 
+                {
+                    var ansatte = csv.GetRecord<Ansatte>();
+                    ansatteList.Add(ansatte);
+                }
+            }
+
+       
+            return ansatteList;
+
+            
+        }
+        catch (Exception ex)
+        {
+            errors.Add($"File: {file.Name} Error: {ex.Message}");
+            throw;
+        }
+
+     
+
+    } //3
+    private async Task<List<Ansatte>> FileJson() //Json  //3
     {
         // Sjekker om filen er null. Returnerer tom liste, hvis den er tom.
         if (file is null)
@@ -115,12 +164,31 @@ else
 
     } //3
 
+
+
     private async Task Import()
     {
-        Console.WriteLine("Du trykker på import");
         try
         {
-            ansatte = await File(); //Metoden blir brukt i denne. Det skal kunne leses og desrialiseres en bestemt fil. 
+            if ( file != null)
+            {
+                var fileExtension = Path.GetExtension(file.Name)?.ToLower();
+
+                if (fileExtension == ".json")
+                {
+                    ansatte = await FileJson(); //Metoden blir brukt i denne. Det skal kunne leses og desrialiseres en bestemt fil.
+                }
+                else if (fileExtension == ".csv")
+                {
+                    ansatte = await FileCsv();
+                }
+                else
+                {
+                    errors.Add("Ingen fil er valgt for å importere");
+                }
+
+            }
+            
             
 
         }
@@ -129,6 +197,7 @@ else
             errors.Add($"Error: {ex.Message}");
             throw;
         }
+        
     } //2
 
 
