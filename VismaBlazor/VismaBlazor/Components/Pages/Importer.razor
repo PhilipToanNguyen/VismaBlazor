@@ -48,7 +48,7 @@ Dataen skal så vises i resultat page som åpnes etter importen er ferdig.
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
+                <th>ID</th>
                 <th>Fornavn</th>
                 <th>Etternavn</th>
                 <th>E-post</th>
@@ -86,48 +86,15 @@ else
 
 
 
-    //Her blir CsvHelper blitt tatt i bruk via NuGET PacketManager. Stream -> CsvReader -> Visualiser.
+    //Her blir CsvHelper blitt tatt i bruk via NuGET PacketManager. 
+    // Stream -> CsvReader -> Visualiser.
+    //3
 
-    private async Task<List<Ansatte>> FileCsv() //CSV
-    {
 
-        // Sjekker om filen er null. Returnerer tom liste, hvis den er tom.
-        if (file is null)
-        {
-            return new List<Ansatte>();
-        }
-
-        List<Ansatte> ansatteList = new List<Ansatte>();
-
-        try
-        {
-            using var stream = file.OpenReadStream();
-            using (var reader = new StreamReader(stream))
-            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-            {
-
-                while (await csv.ReadAsync()) 
-                {
-                    var ansatte = csv.GetRecord<Ansatte>();
-                    ansatteList.Add(ansatte);
-                }
-            }
-
-       
-            return ansatteList;
-
-            
-        }
-        catch (Exception ex)
-        {
-            errors.Add($"File: {file.Name} Error: {ex.Message}");
-            throw;
-        }
-
-     
-
-    } //3
-    private async Task<List<Ansatte>> FileJson() //Json  //3
+    //3
+    //Her blir Json-Deserializerobject tatt i bruk..
+    // Stream -> Reader -> Deserialize -> Visualiser.
+    private async Task<List<Ansatte>> FileJson() //Json 
     {
         // Sjekker om filen er null. Returnerer tom liste, hvis den er tom.
         if (file is null)
@@ -162,14 +129,101 @@ else
         }
 
 
-    } //3
+    } 
+
+
+    private async Task<List<Ansatte>> FileCsv() //CSV
+    {
+
+        // Sjekker om filen er null. Returnerer tom liste, hvis den er tom.
+        if (file is null)
+        {
+            return new List<Ansatte>();
+        }
+
+        List<Ansatte> ansatteList = new List<Ansatte>();
+
+        try
+        {
+            using var stream = file.OpenReadStream(); // fungerer som en scanner i java
+            using (var reader = new StreamReader(stream))
+            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+            {
+
+                while (await csv.ReadAsync()) 
+                {
+                    var ansatte = csv.GetRecord<Ansatte>();
+                    ansatteList.Add(ansatte);
+                }
+            }
+
+
+            return ansatteList;
+
+
+        }
+        catch (Exception ex)
+        {
+            errors.Add($"File: {file.Name} Error: {ex.Message}");
+            throw;
+        }
+
+
+    } 
 
 
 
+
+       private async Task<List<Ansatte>> FileTxt() // SKAL skille kommaer uavhengig av filtyper. Men husk å endre dette i metoden Import(). Klarer å skille i csv filer, men ikke Json.
+    {
+        if (file is null)
+        {
+            return new List<Ansatte>();
+        }
+
+        List<Ansatte> ansatteList = new List<Ansatte>();
+
+        try
+        {
+            using var stream = file.OpenReadStream(maxFileSize); //Scanner sammenlignet med Java-scanner
+            using var reader = new StreamReader(stream); //Leser
+            string? line;
+    
+
+            while ((line = await reader.ReadLineAsync()) != null) //Leser linje for linje
+            {
+            
+                var column = line.Split(','); //Leser linje for linje, men splitter ulike verdier med kommaer i 
+                if (int.TryParse(column[0], out var id)) //  Id = int.Parse(column[0]) Kan også gjøres istedet for å bruke ( if (int.TryParse(column[0], out var id)) )
+                {
+                    var ansatt = new Ansatte
+                        {
+                            Id = id,
+                            Fornavn = column[1],
+                            Etternavn = column[2],
+                            EPost = column[3],
+                            Brukernavn = column[4],
+                            Passord = column[5]
+                        };
+
+                    ansatteList.Add(ansatt);
+                }
+            }
+        }
+        catch (Exception ex) // Feilmeldinger
+        {
+            errors.Add($"Feil ved innlesing av fil: {file.Name}. Feilmelding: {ex.Message}");
+        }
+
+        return ansatteList;
+    }
     private async Task Import()
     {
         try
         {
+            
+            errors.Clear(); //Nullstiller skjermen.
+
             if ( file != null)
             {
                 var fileExtension = Path.GetExtension(file.Name)?.ToLower();
@@ -182,9 +236,20 @@ else
                 {
                     ansatte = await FileCsv();
                 }
-                else
+                else if (fileExtension == ".txt")
                 {
-                    errors.Add("Ingen fil er valgt for å importere");
+                    ansatte = await FileTxt();
+                }
+                else if (fileExtension != ".csv" ||  fileExtension != ".json")
+                {
+                    errors.Add("Det må være en JSON- eller CSV-fil.");
+                }
+                else 
+           
+                    errors.Add("Du må laste opp en JSON- eller CSV-fil");
+               
+                {
+                    
                 }
 
             }
@@ -200,6 +265,7 @@ else
         
     } //2
 
+ 
 
 
 }
