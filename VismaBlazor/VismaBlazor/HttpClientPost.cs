@@ -43,9 +43,7 @@ namespace VismaBlazor
                     Console.WriteLine("BOOM BABY");
                     BrukerRes = JsonConvert.DeserializeObject<List<BrukerRespons>>(response);
                   
-
                 }
-
 
                 else
                 {
