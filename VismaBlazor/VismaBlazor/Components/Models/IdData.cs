@@ -6,13 +6,13 @@ namespace VismaBlazor.Models
     {
         public static readonly List<IdList> IdListe = new()
         {
-
+           
 
         };
 
         public static void LeggTilId(string id)
         {
-            IdListe.Add(new IdList() { Ids = id });
+            IdListe.Add(new IdList() { idliste = id });
         }
 
         public static IdList[] HentIdListe()

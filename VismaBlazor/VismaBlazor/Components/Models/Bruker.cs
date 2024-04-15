@@ -2,7 +2,7 @@
 
 namespace VismaBlazor.Models
 {
-    public class BrukerResponse
+    public class BrukerRespons
     {
 
         public string Fornavn { get; set; } = string.Empty;

@@ -6,27 +6,84 @@ using Newtonsoft.Json;
 using System.Net;
 using VismaBlazor.Models;
 using VismaBlazor;
+using Microsoft.AspNetCore.Components;
+
 
 
 namespace VismaBlazor
 {
+    
     public class HttpClientPost
     {
 
-        private List<BrukerResponse>? BrukerRes;
+        private List<BrukerRespons>? BrukerRes;
+        
 
-        public async Task Post()
+        public async Task Post(int Ids)
+
         {
             using (var client = new HttpClient())
             {
-                var endpoint = new Uri("https://vismaapi2024.azurewebsites.net/");
+                var endpoint = new Uri("https://vismaapi-d8eec0554dca.herokuapp.com/velgAntall");
 
-
-                //var Ids = IdData.HentIdListe();
 
                 Console.WriteLine("Ids:  ");
 
-                var Ids = 10;
+
+                var nyIdJson = JsonConvert.SerializeObject(Ids);
+                Console.WriteLine(nyIdJson);
+                var SData = new StringContent(nyIdJson, System.Text.Encoding.UTF8, "application/json");
+
+                var res = await client.PostAsync(endpoint, SData);
+
+                if (res.IsSuccessStatusCode)
+                {
+
+                    var response = res.Content.ReadAsStringAsync().Result;
+                    Console.WriteLine("BOOM BABY");
+                    BrukerRes = JsonConvert.DeserializeObject<List<BrukerRespons>>(response);
+                  
+
+                }
+
+
+                else
+                {
+                    Console.WriteLine("FAIL!");
+                    Console.WriteLine(res.StatusCode);
+
+                }
+
+            }
+
+        }
+
+        public async Task PostFlereId(string flereIds)
+
+        {
+            using (var client = new HttpClient())
+            {
+                var endpoint = new Uri("https://vismaapi-d8eec0554dca.herokuapp.com/velgID");
+
+
+                IdData.LeggTilId(flereIds);
+
+                Console.WriteLine("Ids:  ");
+
+                if (IdData.HentIdListe() != null)
+                {
+                    foreach (var id in IdData.HentIdListe())
+                    {
+                        Console.WriteLine(id.idliste);
+                    }
+                }
+
+                IdList[] Ids = IdData.HentIdListe();
+
+
+
+               
+       
 
                 var nyIdJson = JsonConvert.SerializeObject(Ids);
                 Console.WriteLine(nyIdJson);
@@ -37,22 +94,24 @@ namespace VismaBlazor
                 {
 
                     var response = res.Content.ReadAsStringAsync().Result;
-                    Console.WriteLine("Success");
-                    BrukerRes = JsonConvert.DeserializeObject<List<BrukerResponse>>(response);
+                    Console.WriteLine("BOOM BABY");
+                    BrukerRes = JsonConvert.DeserializeObject<List<BrukerRespons>>(response);
+
 
                 }
 
 
                 else
                 {
-                    Console.WriteLine("Fail");
+                    Console.WriteLine("FAIL!");
+                    Console.WriteLine(res.StatusCode);
                 }
 
             }
 
         }
 
-        public List<BrukerResponse> HentBrukerResponse()
+        public List<BrukerRespons> HentBrukerResponse()
         {
             return BrukerRes;
         }

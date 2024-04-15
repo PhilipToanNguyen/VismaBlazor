@@ -11,33 +11,37 @@
 
 <PageTitle>Generator</PageTitle>
 
+
 <div>
-    <RadzenCard class="text-center">
+    <RadzenCard class="text-center ">
         <div class="row">
-            <div class="col-md-12">
-                <h3 class="">Generator</h3>
-                <p>Trykk på legg til for å legge til skrive felt for NøkkelID</p>
+            <div class="col-md-12 ">
+                <h3 class="fw-bold">Generator</h3>
+                <div class="px-4">
+                <RadzenCard style="font-size:17px; font-weight:500">
+                    <p>Skriv i feltet under for manuell NøkkelID</p>
+                    </RadzenCard>
+                </div>
                 <div class="row">
-                    @for (int i = 0; i < antall; i++)
-                    {
-                        <div class="col-md-12 p-2">
-                            <RadzenTextBox Placeholder="Skriv Nøkkel" Value="@id" style="width: 50%" />
-                            <RadzenButton Text="Fjern" ButtonStyle="ButtonStyle.Danger" Click="@Fjerninputfield" style="width: 5%" />
-                        </div>
-                    }
 
-                    <div class="col-md-12 p-2">
-                        <RadzenButton Text="Legg til" ButtonStyle="ButtonStyle.Secondary" Click="@Genererinputfield" style="width: 50%" />
+                    <div class="p-4">
+                        <RadzenCard class="">
+                            <textarea value="@flereids" @onchange="@((args) => flereids = args?.Value?.ToString())" class=" border-1 border rounded-3 shadow-sm w-100 h-100 " rows="8" style="resize:none"   />
+                        </RadzenCard>
                     </div>
-
-                    <p>Vis du vil genere data uten nøkkelID skriv i feltet under </p>
+                    <div class="px-4">
+                        <RadzenCard style="font-size:17px; font-weight:500">
+                   
+                    <p>Vis du vil genere data uten nøkkelID skriv antall i feltet under </p>
+                        </RadzenCard>
+                    </div>
                     <div class="col-md-12 p-2">
-                        <RadzenTextBox Placeholder="Skriv antall brukere som skal genereres" style="width: 10%" />
+                        <RadzenTextBox Value="@value" Change="@OnChange" Placeholder="Skriv antall brukere" style="width: 150px" />
                     </div>
 
                     <div class="col-md-12 p-2 text-center">
                         
-                            <RadzenButton Text="Generer" ButtonStyle="ButtonStyle.Success" Click="@SendId" style="width: 50%" />
+                         <RadzenButton Text="Generer" ButtonStyle="ButtonStyle.Success" Click="@SendId" style="width: 50%" />
                        
                     </div>
                 </div>
@@ -46,36 +50,78 @@
     </RadzenCard>
 </div>
 
+@if (load == true)
+{
+    <RadzenAlert Text="Laster inn data" Severity="Severity.Info" AlertStyle="AlertStyle.Info" />
+}
 
+@if (error == true)
+{
+    <RadzenAlert Text="Vennligst skriv i ett av feltene" Severity="Severity.Warning" AlertStyle="AlertStyle.Danger" />
+}
 
 @code {
-    int antall = 0;
 
-    string id = "";
+
+    private int ids;
+    private string? flereids { get; set; }
+    private string? value;
+    private Boolean? error { get; set; }
+    private Boolean load { get; set; }
+    
+    
+
+
+
+    void OnChange(string value)
+    {
+        ids = int.Parse(value);
+
+    }
 
     public IdList[]? idobject;
+
+    
+
 
 
     private async Task SendId()
     {
 
-        await HttpClientPost.Post();
-        NavigationManager.NavigateTo("/Resultat");
+        if (ids != 0 && flereids != null)
+        {
+            load = true;
+            await HttpClientPost.Post(ids);
+            await HttpClientPost.PostFlereId(flereids);
+            
+            NavigationManager.NavigateTo("/Resultat");
+        }
 
+        else if (ids != 0)
+        {
+            load = true;
+            await HttpClientPost.Post(ids);  
+            
+            NavigationManager.NavigateTo("/Resultat");
+        }
+
+        else if (flereids != null)
+        {
+            load = true;
+            await HttpClientPost.PostFlereId(flereids);
+            
+            NavigationManager.NavigateTo("/Resultat");
+        }
+   
+        else 
+        {
+            await HttpClientPost.PostFlereId(flereids);
+            error = true;
+        }
+
+      
     }
 
-
-
-    void Genererinputfield()
-    {
-         antall++;
-    }
-
-    void Fjerninputfield()
-    {
-            antall--;
-           
-    }
    
 
 }

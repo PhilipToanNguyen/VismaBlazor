@@ -2,7 +2,7 @@
 {
     public class IdList
     {
-        public string Ids { get; set; } = string.Empty;
+        public string idliste { get; set; } = string.Empty;
 
     }
 

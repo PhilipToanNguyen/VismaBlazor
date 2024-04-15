@@ -5,13 +5,13 @@ namespace VismaBlazor;
 
     public static class BrukerController
     {
-        public static List<BrukerResponse> brukere = new List<BrukerResponse>();
+        public static List<BrukerRespons> brukere = new List<BrukerRespons>();
 
-    public static void LeggTilBruker(BrukerResponse bruker)
+    public static void LeggTilBruker(BrukerRespons bruker)
     {
         brukere.Add(bruker);
     }
-    public static BrukerResponse[] HentBrukere()
+    public static BrukerRespons[] HentBrukere()
     {
         return brukere.ToArray();
     }
