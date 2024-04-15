@@ -58,7 +58,7 @@ namespace VismaBlazor
 
         }
 
-        public async Task PostFlereId(string flereIds)
+        public async Task PostFlereId(string flereIds) 
 
         {
             using (var client = new HttpClient())
