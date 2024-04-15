@@ -65,27 +65,7 @@ namespace VismaBlazor
             {
                 var endpoint = new Uri("https://vismaapi-d8eec0554dca.herokuapp.com/velgID");
 
-
-                IdData.LeggTilId(flereIds);
-
-                Console.WriteLine("Ids:  ");
-
-                if (IdData.HentIdListe() != null)
-                {
-                    foreach (var id in IdData.HentIdListe())
-                    {
-                        Console.WriteLine(id.idliste);
-                    }
-                }
-
-                IdList[] Ids = IdData.HentIdListe();
-
-
-
-               
-       
-
-                var nyIdJson = JsonConvert.SerializeObject(Ids);
+                var nyIdJson = JsonConvert.SerializeObject(flereIds);
                 Console.WriteLine(nyIdJson);
                 var SData = new StringContent(nyIdJson, System.Text.Encoding.UTF8, "application/json");
                 var res = await client.PostAsync(endpoint, SData);
