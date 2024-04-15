@@ -1,5 +1,7 @@
 ﻿@page "/Resultat"
 @using Models
+@using System.Text.Json
+@using System.Text
 @inject VismaBlazor.HttpClientPost HttpClientPost
 @inject NavigationManager NavigationManager
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
@@ -42,6 +44,11 @@ else
                 </tr>
             }
         </tbody>
+        <div class="gap-6">
+            <button class="btn btn-success" @onclick="() => EksporterJson()">JSON</button>
+            <button class="btn btn-success" @onclick="@( () => Eksporter("csv") )">CSV</button>
+            <button class="btn btn-success" @onclick="@( () => Eksporter("txt") )">TXT</button>
+        </div>
     </table>
 }
 
@@ -52,7 +59,93 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+
+
         BrukerRes = HttpClientPost.HentBrukerResponse();
     }
+
+
+    public async Task JsRuntimeMethod(string type, string convert)
+    {
+        if (JSRuntime != null)
+        {
+            await JSRuntime.InvokeVoidAsync("saveAsFile", type, convert);
+            Console.WriteLine($"Vellykket med eksporteringen! Antall ansatte: {BrukerRes.Count}.");
+        }
+        else
+        {
+            Console.WriteLine("JSRuntime er null. Kan ikke eksportere til JSON.");
+        }
+    }
+
+        [Inject]
+        public IJSRuntime JSRuntime { get; set; }
+
+    private void EksporterJson()
+        {
+            JSRuntime.InvokeVoidAsync("saveAsFile", "brukere.json", JsonSerializer.Serialize(BrukerRes));
+        }
+
+    public async Task Eksporter(string fileExtension)
+    {
+        try
+        {
+            if (BrukerRes != null && BrukerRes.Any())
+            {
+                string fileName = $"data.{fileExtension}";
+
+                // Eksporter til CSV-fil
+                if (fileExtension.ToLower() == "csv")
+                {
+
+                    using (StreamWriter writer = new StreamWriter(fileName))
+                    {
+                        await writer.WriteLineAsync("id,fornavn,etternavn,tlf,brukernavn,passord,epost");
+                        foreach (var bruker in BrukerRes)
+                        {
+                            string linje = $"{bruker.Id},{bruker.Fornavn},{bruker.Etternavn},{bruker.Tlf},{bruker.Brukernavn},{bruker.Passord},{bruker.Epost}";
+                            await writer.WriteLineAsync(linje);
+                        }
+
+                    }
+                    string fileContent = await File.ReadAllTextAsync(fileName);
+
+                    await JsRuntimeMethod(fileName, fileContent);
+
+                }
+                // Eksporter til TXT-fil
+                else if (fileExtension.ToLower() == "txt")
+                {
+
+                    using (StreamWriter writer = new StreamWriter(fileName))
+                    {
+                        await writer.WriteLineAsync("id,fornavn,etternavn,tlf,brukernavn,passord,epost");
+                        foreach (var ansatt in BrukerRes)
+                        {
+
+                            string linje = $"{ansatt.Id},{ansatt.Fornavn},{ansatt.Etternavn},{ansatt.Tlf},{ansatt.Brukernavn},{ansatt.Passord},{ansatt.Epost}";
+                            await writer.WriteLineAsync(linje);
+                        }
+                    }
+                    string fileContent = await File.ReadAllTextAsync(fileName);
+
+                    await JsRuntimeMethod(fileName, fileContent);
+
+                }
+
+                Console.WriteLine($"Eksportert til {fileExtension.ToUpper()}.");
+            }
+            else
+            {
+                Console.WriteLine($"Ingen data å eksportere.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Feil ved eksportering: {ex.Message}");
+        }
+    }
+
+
 
 }
