@@ -12,6 +12,7 @@ namespace VismaBlazor.Models
         public string Epost { get; set; } = string.Empty;
         public string Brukernavn { get; set; } = string.Empty;
 
+        public string Passord { get; set; } = string.Empty;
 
     }
 }
