@@ -107,8 +107,11 @@ else
     public IBrowserFile? file;
     public Random random = new Random();
 
-
-
+    private int ids;
+    private string? flereids { get; set; }
+    private string? value;
+    private Boolean? error { get; set; }
+    private Boolean load { get; set; }
 
     // Inject IJSRuntime
     [Inject]
@@ -137,107 +140,115 @@ else
     }
 
 
-    //2
-    //Her blir Json-Deserializerobject tatt i bruk..
-    // Stream -> Reader -> Deserialize -> Visualiser.
-    public async Task<List<BrukerRespons>> FileJson(IBrowserFile file) //Json
-    {
-        // Sjekker om filen er null. Returnerer tom liste, hvis den er tom.
-        if (file is null)
-        {
-            return new List<BrukerRespons>();
-        }
-
-        //Try catch. Åpner strømmen og kopierer innholdet ved bruk av memorystream midlertidig.
-        try
-        {
-
-            using (MemoryStream memoryStream = new MemoryStream())
-            {
-                Console.WriteLine($"Filen '{file.Name}' Laster opp..");
-                await file.OpenReadStream().CopyToAsync(memoryStream);
-                memoryStream.Position = 0;
-
-                //Deserialisering av JSON ved bruk av streamreader til å lese json innhold fra memorystreamen.
-                //Vi bruker Newtonsoft.Json- biblioteket for å deserialisere til en liste og returneres.
-                using (StreamReader reader = new StreamReader(memoryStream))
-                {
-
-                    var json = await reader.ReadToEndAsync();
-                    BrukerRes = JsonConvert.DeserializeObject<List<BrukerRespons>>(json);
-
-                    return BrukerRes;                 
-                }
-
-            }
-
-        }
-        catch (Exception ex)
-        {
-            errors.Add($"File: {file.Name} Error: {ex.Message}");
-            throw;
-        }
-    }
-
-    //2
-    // SKAL skille kommaer uavhengig av filtyper. Men husk å endre dette i metoden Import(). Klarer å skille i csv filer, men ikke Json.
     public async Task<List<BrukerRespons>> Files(IBrowserFile file)
     {
-
         if (file is null)
         {
             return new List<BrukerRespons>();
         }
 
-        List<BrukerRespons> ansatteList = new List<BrukerRespons>();
-        Console.WriteLine($"Filen '{file.Name}' Laster opp..");
+        List<BrukerRespons> idListe = new List<BrukerRespons>();
+        Console.WriteLine($"Filen '{file.Name}' laster opp..");
+
         try
         {
-            using var stream = file.OpenReadStream(maxFileSize); //Scanner sammenlignet med Java-scanner
-            using var reader = new StreamReader(stream); //Leser
-            string? line;
-
-            string? fornavn = "fornavn";
-            string? etternavn = "etternavn";
-            int? tlf = 2;
-            string? brukernavn = "brukernavn";
-            string? passord = "passord";
-            string? epost = "epost";
-
-            while ((line = await reader.ReadLineAsync()) != null) //Leser linje for linje
+            using (var stream = file.OpenReadStream())
+            using (var reader = new StreamReader(stream))
             {
+                var allIds = new List<string>();
+                string line;
+                bool isFirstLine = true;
 
-                var column = line.Split(','); //Leser linje for linje, men splitter ulike verdier med kommaer i
-                if (int.TryParse(column[0], out var id) && int.TryParse(column[3], out var telefon)) //  Id = int.Parse(column[0]) Kan også gjøres istedet for å bruke ( if (int.TryParse(column[0], out var id)) )
+                while ((line = await reader.ReadLineAsync()) != null)
+
                 {
-                    var ansatt = new BrukerRespons
+                    if (isFirstLine)
+                    {
+                        isFirstLine = false;
+                        continue;
+                    }
+                    allIds.AddRange(line.Split(',').Where(id => !string.IsNullOrWhiteSpace(id)));
+                }
+
+                if (allIds.Count > 0)
+                {
+                    try
+                    {
+                        // Konverter listen til komma sepparert
+                        var idsString = string.Join(",", allIds);
+
+                        // ikke for hver linje, men alle på en
+                        await HttpClientPost.PostFlereId(idsString);
+
+                        // Anta at HentBrukerResponse er en metode for å hente lagrede svar
+                        if (HttpClientPost.HentBrukerResponse() != null)
                         {
-                            Id = id,
-                            Fornavn = fornavn,
-                            Etternavn = column[2],
-                            Tlf = telefon,
-                            Brukernavn = column[4],
-                            Passord = column[5],
-                            Epost = epost,
-                        };
+                            idListe.AddRange(HttpClientPost.HentBrukerResponse());
+                        }
 
-                    ansatteList.Add(ansatt);
-
+                        Console.WriteLine("Brukerdata for alle IDer lagt til.");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Feil ved henting av brukerdata: {ex.Message}");
+                    }
                 }
             }
-
         }
-
-        catch (Exception ex) // Feilmeldinger
+        catch (Exception ex)
         {
             errors.Add($"Feil ved innlesing av fil: {file.Name}. Feilmelding: {ex.Message}");
         }
 
-        return ansatteList;
-
+        return idListe;
     }
+    public async Task<List<BrukerRespons>> FilesJson(IBrowserFile file)
+    {
+        if (file == null)
+        {
+            Console.WriteLine("Ingen fil valgt.");
+            return new List<BrukerRespons>();
+        }
 
+        List<BrukerRespons> gyldigeBrukere = new List<BrukerRespons>();
+        Console.WriteLine($"Laster opp filen '{file.Name}'...");
 
+        try
+        {
+            using (var stream = file.OpenReadStream())
+            using (var reader = new StreamReader(stream))
+            {
+                string jsonContent = await reader.ReadToEndAsync();
+                List<BrukerRespons> brukerListe = JsonConvert.DeserializeObject<List<BrukerRespons>>(jsonContent);
+
+                // Samler gyldige IDer
+                var gyldigId = brukerListe.Where(b => int.TryParse(b.Id, out _)).Select(b => b.Id).ToList();
+
+                if (gyldigId.Any())
+                {
+                    //komma-separert streng
+                    string idString = String.Join(",", gyldigId);
+
+                    // Post IDs til api
+                    await HttpClientPost.PostFlereId(idString);
+                    Console.WriteLine($"IDer sendt til API: {idString}");
+
+                    // metode for å hente responsen            
+                    gyldigeBrukere = HttpClientPost.HentBrukerResponse(); 
+                }
+            }
+        }
+        catch (JsonException e)
+        {
+            Console.WriteLine($"Feil ved parsing av JSON: {e.Message}");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Generisk feil: {e.Message}");
+        }
+
+        return gyldigeBrukere;
+    }
 
 
     //3
@@ -254,13 +265,13 @@ else
 
                 if (fileExtension == ".txt" || fileExtension == ".csv") 
                 {
-                    BrukerRes = await Files3(file);
+                    BrukerRes = await Files(file);
                     Console.WriteLine($"Filen '{file.Name}' er ferdig lastet opp");
 
                 }
                 else if (fileExtension == ".json")
                 {
-                    BrukerRes = await Files3(file);
+                    BrukerRes = await FilesJson(file);
                     Console.WriteLine($"Filen '{file.Name}' er ferdig lastet opp.");
                 }
 
@@ -383,72 +394,11 @@ else
         }
     }
 
-    //Bekreftelse på at det visualiseres --- (Brukes til testing)
-    public bool Visualisering()
-    {
-        if (BrukerRes != null && BrukerRes.Any())
-        {
-            Console.WriteLine($"Filen '{file.Name} 'Visualiseres!");
-            Console.WriteLine($"Visualisering OK! Antall ansatte som vises: '{BrukerRes.Count}'");
-            return true;
 
-
-        }
-
-        else
-        {
-            Console.WriteLine("Ingen data å vise.");
-            return false;
-        }
-    }
-
-
-
-    public async Task<List<BrukerRespons>> Files3(IBrowserFile file)
-    {
-
-        if (file is null)
-        {
-            return new List<BrukerRespons>();
-        }
-
-        List<BrukerRespons> idListe = new List<BrukerRespons>();
-        Console.WriteLine($"Filen '{file.Name}' Laster opp..");
-
-        try{
-
-            using var stream = file.OpenReadStream(); //Scanner sammenlignet med Java-scanner
-            using var reader = new StreamReader(stream); //Leser
-            string? line;
-            while ((line = await reader.ReadLineAsync()) != null) //Leser linje for linje
-            {
-                var ids = line.Split(',');
-
-                foreach (var idStr in ids)
-                {
-                    if (idListe != null)
-                    {
-                        var bruker = new BrukerRespons
-                            {
-                               
-                           };
-
-                        
-                    
-                    idListe.Add(bruker);
-                    Console.WriteLine($"Ansatte ID {ids} lagt til.");
-                }
-            }
-        }
-        
-}
-        catch (Exception ex)
-        {
-            errors.Add($"Feil ved innlesing av fil: {file.Name}. Feilmelding: {ex.Message}");
-        }
-
-        return idListe;
-
-    }
 
 }
+    
+
+
+
+
