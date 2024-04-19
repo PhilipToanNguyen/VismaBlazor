@@ -13,13 +13,13 @@
 @using Microsoft.AspNetCore.Components.Forms;
 @using Models
 
+@using System.Linq
+
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @attribute [StreamRendering]
 
-@using System;
-@using System.Collections.Generic;
-@using System.Linq;
- 
+
+
 
 <PageTitle>Importer fil</PageTitle>
 
@@ -30,15 +30,12 @@ Dataen skal så vises i resultat page som åpnes etter importen er ferdig.
 *@
 
 
-<div class="d-flex justify-content-between form-control">
-<InputFile OnChange="LoadFiles" />
-    <div class="gap-6">
-    <button class="btn btn-primary" @onclick="() => Opplastning(file)">Last opp</button>
 
-       
-      
-    </div>
-</div>
+
+<RadzenCard class="py-4 flex-column justify-content-start" >   
+    <InputFile OnChange="LoadFiles" />
+    <RadzenButton Text="Upload" Click=@(args => Opplastning(file))  class="d-block pt-2 mt-4" />  
+</RadzenCard>
 
 
 
@@ -55,67 +52,63 @@ Dataen skal så vises i resultat page som åpnes etter importen er ferdig.
         </ul>
 }
 
+
 @if (BrukerRes != null && BrukerRes.Any())
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Fornavn</th>
-                <th>Etternavn</th>
-                <th>Telefon</th>
-                <th>Brukernavn</th>
-                <th>Passord</th>
-                <th>E-post</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var bruker in BrukerRes)
-            {
-                <tr>
-                    <td>@bruker.Id</td>
-                    <td>@bruker.Fornavn</td>
-                    <td>@bruker.Etternavn</td>
-                    <td>@bruker.Tlf</td>
-                    <td>@bruker.Brukernavn</td>
-                    <td>@bruker.Passord</td>
-                    <td>@bruker.Epost</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    
-    <div class="d-flex justify-content-end">
-        <div class="gap-6">
-            <button class="btn btn-success" @onclick="() => EksporterJson()">JSON</button>
-            <button class="btn btn-success" @onclick="@( () => Eksporter("csv") )">CSV</button>
-            <button class="btn btn-success" @onclick="@( () => Eksporter("txt") )">TXT</button>
-        </div>
-    </div>
+    <RadzenGrid TItem="BrukerRespons" Data="@BrukerRes" Style="width: 100%"
+                AllowPaging="true" AllowSorting="true" AllowFiltering="true">
+        <Columns>
+            <RadzenGridColumn TItem="BrukerRespons" Property="Id" Title="ID" Width="80px" Filterable="true" />
+            <RadzenGridColumn TItem="BrukerRespons" Property="Fornavn" Title="Fornavn" Width="100px" />
+            <RadzenGridColumn TItem="BrukerRespons" Property="Etternavn" Title="Etternavn" Width="100px" />
+            <RadzenGridColumn TItem="BrukerRespons" Property="Tlf" Title="Telefon" Width="100px" />
+            <RadzenGridColumn TItem="BrukerRespons" Property="Brukernavn" Title="Brukernavn" Width="120px" />
+            <RadzenGridColumn TItem="BrukerRespons" Property="Passord" Title="Passord" Width="120px" />
+            <RadzenGridColumn TItem="BrukerRespons" Property="Epost" Title="E-post" Width="200px" />
+        </Columns>
+    </RadzenGrid>
+
+   <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="10" Wrap="FlexWrap.Wrap" class="pt-4">
+    <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Click=@(args => (EksporterJson())) Text="JSON" ButtonStyle="ButtonStyle.Success" />
+    <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Click=@(args => (Eksporter("csv"))) Text="CSV" ButtonStyle="ButtonStyle.Success" />
+    <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Click=@(args => (Eksporter("txt"))) Text="TXT" ButtonStyle="ButtonStyle.Success" />
+  </RadzenStack>
 } 
 else
 {
-    <p>Ingen data å vise... </p>  
+    <RadzenAlert Title="Ingen data å vise." AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter">
+        Last opp en fil (TXT, CSV eller JSON)
+    </RadzenAlert>
 }
 
 @code
 {
+
+    Radzen.DataGridGridLines GridLines = Radzen.DataGridGridLines.Default;
+    RadzenDataGrid<BrukerRespons> ansatte;
+
+   
+
     public List<BrukerRespons>? BrukerRes;
     public long maxFileSize = 1024 * 1024 * 3;  // 3MB  List<Ansatte> ansatteListe = new List<Ansatte>();
     private List<string> errors = new List<string>();
     public IBrowserFile? file;
     public Random random = new Random();
 
-    private int ids;
-    private string? flereids { get; set; }
-    private string? value;
-    private Boolean? error { get; set; }
-    private Boolean load { get; set; }
+    //Radzen
+    HorizontalAlign pagerHorizontalAlign = HorizontalAlign.Justify;
+    PagerPosition pagerPosition = PagerPosition.Bottom;
+
 
     // Inject IJSRuntime
     [Inject]
     public IJSRuntime JSRuntime { get; set; }
 
+   
+    
+
+  
+    
     //1
     public async Task LoadFiles(InputFileChangeEventArgs e)
     {
@@ -137,6 +130,7 @@ else
             throw; // Kast unntaket videre for å indikere at handlingen mislyktes
         }
     }
+  
 
 
     public async Task<List<BrukerRespons>> Files(IBrowserFile file)
@@ -395,7 +389,20 @@ else
 
 
 
-}
+
+
+
+
+
+     
+
+    
+
+    
+        }
+    
+
+
     
 
 

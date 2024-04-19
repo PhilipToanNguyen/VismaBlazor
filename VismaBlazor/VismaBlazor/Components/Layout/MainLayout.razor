@@ -1,25 +1,40 @@
 ﻿@inherits LayoutComponentBase
+@using Radzen
+@using Radzen.Blazor
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<RadzenLayout>
+    <RadzenHeader class="">
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0">
+            
+            <RadzenLabel Text="Visma" class="p-4" />
+        </RadzenStack>
+    </RadzenHeader>
+     
+    <RadzenSidebar Responsive="false" Style="width: max-content" @bind-Expanded="@sidebarExpanded">
+        <RadzenPanelMenu DisplayStyle="@(sidebarExpanded ? MenuItemDisplayStyle.IconAndText : MenuItemDisplayStyle.Icon)" ShowArrow="false">
+              <RadzenPanel Text= " NavnEtternavn@visma.com " Icon=""></RadzenPanel>
 
-    <main>
-        <script src="js/site.js"></script>
+      
+            <RadzenPanelMenuItem Text="Import" Icon="file_upload" Path="" />
+            <RadzenPanelMenuItem Text="Generator" Icon="create" Path="Generator" />
+            <RadzenPanelMenuItem Text="Logg ut" Icon="logout" Path="Login" />
+           
+        </RadzenPanelMenu>
+    </RadzenSidebar>
 
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+    <RadzenBody>
+        <div class="rz-p-4">
+           @Body
         </div>
+    </RadzenBody>
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+    <RadzenFooter class="rz-text-align-center" Style ="">
+        <RadzenLabel Text="Visma // Gruppe 5 // 2024 " />
+    </RadzenFooter>
+</RadzenLayout>
 
-<div id="blazor-error-ui">
-    An unhandled error has occurred.
-    <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
-</div>
+@code {
+    bool sidebarExpanded = true;
+
+
+}

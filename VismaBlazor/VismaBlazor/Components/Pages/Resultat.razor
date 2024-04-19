@@ -2,6 +2,9 @@
 @using Models
 @using System.Text.Json
 @using System.Text
+@using Newtonsoft.Json
+@using Radzen
+@using Radzen.Blazor
 @inject VismaBlazor.HttpClientPost HttpClientPost
 @inject NavigationManager NavigationManager
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
@@ -17,39 +20,35 @@
     <p><em>Loading...</em></p>
   
 }
+
+
+
+@if (BrukerRes != null && BrukerRes.Any())
+{
+    <RadzenGrid TItem="BrukerRespons" Data="@BrukerRes" Style="width: 100%"
+                AllowPaging="true" AllowSorting="true" AllowFiltering="true">
+        <Columns>
+            <RadzenGridColumn TItem="BrukerRespons" Property="Id" Title="ID" Width="80px" Filterable="true" />
+            <RadzenGridColumn TItem="BrukerRespons" Property="Fornavn" Title="Fornavn" Width="100px" />
+            <RadzenGridColumn TItem="BrukerRespons" Property="Etternavn" Title="Etternavn" Width="100px" />
+            <RadzenGridColumn TItem="BrukerRespons" Property="Tlf" Title="Telefon" Width="100px" />
+            <RadzenGridColumn TItem="BrukerRespons" Property="Brukernavn" Title="Brukernavn" Width="120px" />
+            <RadzenGridColumn TItem="BrukerRespons" Property="Passord" Title="Passord" Width="120px" />
+            <RadzenGridColumn TItem="BrukerRespons" Property="Epost" Title="E-post" Width="200px" />
+        </Columns>
+    </RadzenGrid>
+
+   <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="10" Wrap="FlexWrap.Wrap" class="pt-4">
+    <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Click=@(args => (EksporterJson())) Text="JSON" ButtonStyle="ButtonStyle.Success" />
+    <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Click=@(args => (Eksporter("csv"))) Text="CSV" ButtonStyle="ButtonStyle.Success" />
+    <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Click=@(args => (Eksporter("txt"))) Text="TXT" ButtonStyle="ButtonStyle.Success" />
+  </RadzenStack>
+} 
 else
 {
-    <table class="table table-striped table-bordered table-hover table-dark">
-        <thead>
-            <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Navn</th>
-                <th scope="col">Etternavn</th>
-                <th scope="col">Telefon</th>
-                <th scope="col">Brukernavn</th>
-                <th scope="col">Epost</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            @foreach (var bruker in BrukerRes)
-            {
-                <tr>
-                    <th scope="row">@bruker.Id</th>
-                    <td>@bruker.Fornavn</td>
-                    <td>@bruker.Etternavn</td>
-                    <td>@bruker.Tlf</td>
-                    <td>@bruker.Brukernavn</td>
-                    <td>@bruker.Epost</td>
-                </tr>
-            }
-        </tbody>
-        <div class="gap-6">
-            <button class="btn btn-success" @onclick="() => EksporterJson()">JSON</button>
-            <button class="btn btn-success" @onclick="@( () => Eksporter("csv") )">CSV</button>
-            <button class="btn btn-success" @onclick="@( () => Eksporter("txt") )">TXT</button>
-        </div>
-    </table>
+    <RadzenAlert Title="Ingen data å vise." AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter">
+        Last opp en fil (TXT, CSV eller JSON)
+    </RadzenAlert>
 }
 
 
@@ -81,10 +80,26 @@ else
         [Inject]
         public IJSRuntime JSRuntime { get; set; }
 
-    private void EksporterJson()
+    public async Task EksporterJson()
+    {
+        try
         {
-            JSRuntime.InvokeVoidAsync("saveAsFile", "brukere.json", JsonSerializer.Serialize(BrukerRes));
+            if (BrukerRes != null && BrukerRes.Any())
+            {
+                // Opprett en liste med anonyme objekter basert på ansatte-data
+                var jsonData = BrukerRes;
+
+                // Serialisere listen til JSON
+                var jsonString = JsonConvert.SerializeObject(jsonData);
+
+                await JsRuntimeMethod("data.json", jsonString);
+            }
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Feil ved eksportering til JSON: {ex.Message}");
+        }
+    }
 
     public async Task Eksporter(string fileExtension)
     {
