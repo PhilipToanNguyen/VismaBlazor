@@ -7,6 +7,7 @@ using System.Net;
 using VismaBlazor.Models;
 using VismaBlazor;
 using Microsoft.AspNetCore.Components;
+using System.Linq.Dynamic.Core.Tokenizer;
 
 
 
@@ -22,12 +23,22 @@ namespace VismaBlazor
         public async Task Post(int Ids)
 
         {
+            var token = await HentAuth();
+            Console.WriteLine(token);
+            if (token != null)
+            { 
+
             using (var client = new HttpClient())
+
             {
-                var endpoint = new Uri("https://vismaapi-d8eec0554dca.herokuapp.com/velgAntall");
+                var endpoint = new Uri("https://vismaapi-d8eec0554dca.herokuapp.com/velgAntall/test");
+
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                    
+                    //client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
 
 
-                Console.WriteLine("Ids:  ");
+                    Console.WriteLine("Ids:  ");
 
 
                 var nyIdJson = JsonConvert.SerializeObject(Ids);
@@ -39,7 +50,7 @@ namespace VismaBlazor
                 if (res.IsSuccessStatusCode)
                 {
 
-                    var response = res.Content.ReadAsStringAsync().Result;
+                    var response = await res.Content.ReadAsStringAsync();
                     Console.WriteLine("BOOM BABY");
                     BrukerRes = JsonConvert.DeserializeObject<List<BrukerRespons>>(response);
                   
@@ -47,23 +58,32 @@ namespace VismaBlazor
 
                 else
                 {
-                    Console.WriteLine("FAIL!");
+                    Console.WriteLine("FAIL!" + res.Content.ReadAsStringAsync().Result);
                     Console.WriteLine(res.StatusCode);
 
-                }
 
+                }
+                }
             }
 
         }
 
         public async Task PostFlereId(string flereIds) 
-
         {
+            var token = await HentAuth();
+            Console.WriteLine(token);
+            if (token != null)
+            { 
+
             using (var client = new HttpClient())
             {
                 var endpoint = new Uri("https://vismaapi-d8eec0554dca.herokuapp.com/velgID");
+                //client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-                var nyIdJson = JsonConvert.SerializeObject(flereIds);
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                    //client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+
+                    var nyIdJson = JsonConvert.SerializeObject(flereIds);
                 Console.WriteLine(nyIdJson);
                 var SData = new StringContent(nyIdJson, System.Text.Encoding.UTF8, "application/json");
                 var res = await client.PostAsync(endpoint, SData);
@@ -71,7 +91,7 @@ namespace VismaBlazor
                 if (res.IsSuccessStatusCode)
                 {
 
-                    var response = res.Content.ReadAsStringAsync().Result;
+                    var response = await res.Content.ReadAsStringAsync();
                     Console.WriteLine("BOOM BABY");
                     BrukerRes = JsonConvert.DeserializeObject<List<BrukerRespons>>(response);
 
@@ -81,12 +101,60 @@ namespace VismaBlazor
 
                 else
                 {
-                    Console.WriteLine("FAIL!");
+                    Console.WriteLine("FAIL! flere ids");
                     Console.WriteLine(res.StatusCode);
                 }
 
             }
+            }
 
+        }
+
+
+        public async Task<string> HentAuth()
+        {
+            using (var client = new HttpClient())
+            {
+                var endpoint = new Uri("https://dev-mfpashiwkekjyu0q.eu.auth0.com/oauth/token");
+
+                var reqbody = new
+                {
+                    client_id = "NVpCeYmFKsFA3s2AmynIV24NlLdUuOCb",
+                    client_secret = "CfqZglk1Np_GXBNLm5tE7nkKEdpHfmfZn3FH-h9lpumJfZeO8xgG4ZpOjhaKOAEV",
+                    audience = "https://vismaapi-d8eec0554dca.herokuapp.com/",
+                    grant_type = "client_credentials",
+                };
+
+                
+
+                var reqb = JsonConvert.SerializeObject(reqbody);
+                var content = new StringContent(reqb, System.Text.Encoding.UTF8, "application/json");
+
+                var res = await client.PostAsync(endpoint, content);
+
+                if (res.IsSuccessStatusCode)
+                {
+                    string response = await res.Content.ReadAsStringAsync();
+                    Console.WriteLine(response);
+                 
+
+                   
+
+                    dynamic jsonResponse = JsonConvert.DeserializeObject(response);
+                    return  jsonResponse.access_token;
+                  
+                    
+                    
+                    
+                }
+
+                else
+                {
+                    Console.WriteLine("FAIL! fikk ikke token");
+                    Console.WriteLine(res.StatusCode);
+                    return null;
+                }
+            }
         }
 
         public List<BrukerRespons> HentBrukerResponse()

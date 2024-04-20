@@ -1,13 +1,24 @@
 ﻿@page "/Login"
+@using Microsoft.AspNetCore.Authentication;
+@using Microsoft.AspNetCore.Authentication.Cookies;
+@using Auth0.AspNetCore.Authentication;
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Radzen
 @using Radzen.Blazor
+
+
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@attribute [StreamRendering]
+@attribute [Authorize]
 
 <PageTitle>Login</PageTitle>
 
 <RadzenCard class="rz-my-12 rz-mx-auto rz-p-4 rz-p-md-12" style="max-width: 600px;">
 
-    <RadzenTemplateForm Data=@("SimpleLogin") Action="http://www.google.com">
-        <RadzenLogin AllowRegister="false" AllowResetPassword="false" />
-    </RadzenTemplateForm>
+    <p> Hello !</p>
+
+    
 
 </RadzenCard>
 
@@ -15,5 +26,7 @@
 @code {
 
 
+
+   
 
 }

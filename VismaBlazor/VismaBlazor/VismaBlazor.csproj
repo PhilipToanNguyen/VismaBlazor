@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VismaBlazor.Client\VismaBlazor.Client.csproj" />
+    <PackageReference Include="Auth0.AspNetCore.Authentication" Version="1.4.1" />
     <PackageReference Include="CsvHelper" Version="31.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.1" />
     <PackageReference Include="Moq" Version="4.20.70" />

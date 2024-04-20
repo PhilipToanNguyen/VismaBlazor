@@ -3,6 +3,7 @@
 @inject VismaBlazor.HttpClientPost HttpClientPost
 @inject NavigationManager NavigationManager
 @using CsvHelper
+@using Microsoft.AspNetCore.Authorization
 @using Newtonsoft.Json
 @using Radzen
 @using Radzen.Blazor
@@ -17,6 +18,7 @@
 
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @attribute [StreamRendering]
+@attribute [Authorize]
 
 
 
