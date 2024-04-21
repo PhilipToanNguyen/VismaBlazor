@@ -110,18 +110,23 @@ namespace VismaBlazor
 
         }
 
-
+        
         public async Task<string> HentAuth()
         {
             using (var client = new HttpClient())
             {
                 var endpoint = new Uri("https://dev-mfpashiwkekjyu0q.eu.auth0.com/oauth/token");
 
+                
+                var id = Environment.GetEnvironmentVariable("ClientId");
+                var secret = Environment.GetEnvironmentVariable("ClientSecret");
+                var audi = Environment.GetEnvironmentVariable("Audience");
+
                 var reqbody = new
                 {
-                    client_id = "NVpCeYmFKsFA3s2AmynIV24NlLdUuOCb",
-                    client_secret = "CfqZglk1Np_GXBNLm5tE7nkKEdpHfmfZn3FH-h9lpumJfZeO8xgG4ZpOjhaKOAEV",
-                    audience = "https://vismaapi-d8eec0554dca.herokuapp.com/",
+                    client_id = id,
+                    client_secret = secret,
+                    audience = audi,
                     grant_type = "client_credentials",
                 };
 
@@ -135,7 +140,7 @@ namespace VismaBlazor
                 if (res.IsSuccessStatusCode)
                 {
                     string response = await res.Content.ReadAsStringAsync();
-                    Console.WriteLine(response);
+                    
                  
 
                    

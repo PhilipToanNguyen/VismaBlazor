@@ -4,16 +4,26 @@
 @using Radzen.Blazor
 
 <RadzenLayout>
-    <RadzenHeader class="">
+    <RadzenHeader class="w-100">
+        <div class="flex-row ">
         <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0">
             
+
+            
             <RadzenLabel Text="Visma" class="p-4" />
-        </RadzenStack>
+
+            <RadzenCard>
+                <div class="text-black text-uppercase fw-bold fs-6">
+                @user
+                </div>
+                </RadzenCard>
+
+            </RadzenStack>
+        </div>
     </RadzenHeader>
      
     <RadzenSidebar Responsive="false" Style="width: max-content" @bind-Expanded="@sidebarExpanded">
         <RadzenPanelMenu DisplayStyle="@(sidebarExpanded ? MenuItemDisplayStyle.IconAndText : MenuItemDisplayStyle.Icon)" ShowArrow="false">
-              <RadzenPanel Text=@user Icon=""></RadzenPanel>
 
       
             <RadzenPanelMenuItem Text="Import" Icon="file_upload" Path="" />
