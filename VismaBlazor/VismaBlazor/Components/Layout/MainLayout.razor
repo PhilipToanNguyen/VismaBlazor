@@ -3,22 +3,19 @@
 @using Radzen.Blazor
 
 <RadzenLayout>
-    <RadzenHeader class="">
-        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0">
-            
-            <RadzenLabel Text="Visma" class="p-4" />
+    <RadzenHeader class="bg-primary text-white">
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0" >
+
+            <RadzenText TextStyle="TextStyle.H3" class="text-white p-3">Visma</RadzenText>
         </RadzenStack>
     </RadzenHeader>
      
-    <RadzenSidebar Responsive="false" Style="width: max-content" @bind-Expanded="@sidebarExpanded">
+    <RadzenSidebar Responsive="false" class="" Style="width: max-content" @bind-Expanded="@sidebarExpanded">
         <RadzenPanelMenu DisplayStyle="@(sidebarExpanded ? MenuItemDisplayStyle.IconAndText : MenuItemDisplayStyle.Icon)" ShowArrow="false">
-              <RadzenPanel Text= " NavnEtternavn@visma.com " Icon=""></RadzenPanel>
-
-      
+            <RadzenPanel Text= " NavnEtternavn@visma.com"></RadzenPanel>
             <RadzenPanelMenuItem Text="Import" Icon="file_upload" Path="" />
-            <RadzenPanelMenuItem Text="Generator" Icon="create" Path="Generator" />
-            <RadzenPanelMenuItem Text="Logg ut" Icon="logout" Path="Login" />
-           
+            <RadzenPanelMenuItem Text="Generator" Icon="create" Path="Generator" /> 
+            <RadzenPanelMenuItem Text="Logg ut" Icon="logout" Path="Login" class="" />
         </RadzenPanelMenu>
     </RadzenSidebar>
 
@@ -28,11 +25,13 @@
         </div>
     </RadzenBody>
 
-    <RadzenFooter class="rz-text-align-center" Style ="">
-        <RadzenLabel Text="Visma // Gruppe 5 // 2024 " />
-    </RadzenFooter>
-</RadzenLayout>
 
+
+</RadzenLayout>
+<RadzenFooter class="rz-text-align-center bg-primary text-white" >
+    <RadzenText TextStyle="TextStyle.Overline" class="text-white p-2">Visma ┃ Gruppe 5 ┃ @@2024 </RadzenText>
+
+</RadzenFooter>
 @code {
     bool sidebarExpanded = true;
 

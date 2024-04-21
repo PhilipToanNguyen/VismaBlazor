@@ -32,7 +32,7 @@ Dataen skal så vises i resultat page som åpnes etter importen er ferdig.
 
 
 
-<RadzenCard class="py-4 flex-column justify-content-start" >   
+<RadzenCard class="py-4 flex-column" Style="width: 100%">
     <InputFile OnChange="LoadFiles" />
     <RadzenButton Text="Upload" Click=@(args => Opplastning(file))  class="d-block pt-2 mt-4" />  
 </RadzenCard>
@@ -55,7 +55,7 @@ Dataen skal så vises i resultat page som åpnes etter importen er ferdig.
 
 @if (BrukerRes != null && BrukerRes.Any())
 {
-    <RadzenGrid TItem="BrukerRespons" Data="@BrukerRes" Style="width: 100%"
+    <RadzenGrid TItem="BrukerRespons" Data="@BrukerRes"
                 AllowPaging="true" AllowSorting="true" AllowFiltering="true">
         <Columns>
             <RadzenGridColumn TItem="BrukerRespons" Property="Id" Title="ID" Width="80px" Filterable="true" />
@@ -64,7 +64,7 @@ Dataen skal så vises i resultat page som åpnes etter importen er ferdig.
             <RadzenGridColumn TItem="BrukerRespons" Property="Tlf" Title="Telefon" Width="100px" />
             <RadzenGridColumn TItem="BrukerRespons" Property="Brukernavn" Title="Brukernavn" Width="120px" />
             <RadzenGridColumn TItem="BrukerRespons" Property="Passord" Title="Passord" Width="120px" />
-            <RadzenGridColumn TItem="BrukerRespons" Property="Epost" Title="E-post" Width="200px" />
+            <RadzenGridColumn TItem="BrukerRespons" Property="Epost" Title="E-post" Width="px" />
         </Columns>
     </RadzenGrid>
 
@@ -76,7 +76,7 @@ Dataen skal så vises i resultat page som åpnes etter importen er ferdig.
 } 
 else
 {
-    <RadzenAlert Title="Ingen data å vise." AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter">
+    <RadzenAlert Title="Ingen data å vise." style="width: 100%" AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter ">
         Last opp en fil (TXT, CSV eller JSON)
     </RadzenAlert>
 }
