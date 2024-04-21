@@ -3,12 +3,12 @@ html, body {
 }
 
 a, .btn-link {
-    color: #006bb7;
+    color: #fa0039;
 }
 
 .btn-primary {
     color: #fff;
-    background-color: #1b6ec2;
+    background-color: #fa0039;
     border-color: #1861ac;
 }
 

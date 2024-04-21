@@ -24,34 +24,35 @@
 
 <PageTitle>Hjem</PageTitle>
 
-<RadzenRow AlignItems="AlignItems.Center" class="rz-text-align-center " Gap="2rem">
-    <RadzenCard class="bg-primary bg-opacity-10  " Style="width:15rem">
+<RadzenRow AlignItems="AlignItems.Center" class="rz-text-align-center pt-2" Gap="2rem" >
+    <RadzenCard class="bg-opacity-10  " >
         <RadzenRow AlignItems="AlignItems.Center" class=" rz-my-10 bg-opacity-25 flex-column">
-            <RadzenImage Path="images/undraw_add_files_re_v09g.svg" Style="width: 10rem" AlternateText="community" />
-            <RadzenButton Text="Importer fil" ButtonStyle="ButtonStyle.Primary"></RadzenButton>
+            <RadzenImage Path="images/undraw_add_files_re_v09g.png" Style="width: 10rem" AlternateText="import" class="p-2" />
+            <RadzenButton Text="Importer fil" class="mt-4 bg-danger" Click="@ImporterPage" />
         </RadzenRow>
     </RadzenCard>
-    <RadzenCard class="bg-primary bg-opacity-10" Style="width:15rem">
-        <RadzenRow AlignItems="AlignItems.Center" class=" rz-my-10 bg-opacity-25 flex-column ">
-            <RadzenImage Path="images/undraw_filter_re_sa16.svg" Style="width: 10rem" AlternateText="community" />
-            <RadzenButton Text="Generer data" ButtonStyle="ButtonStyle.Primary"></RadzenButton>
+    <RadzenCard class="bg-opacity-10" >
+        <RadzenRow AlignItems="AlignItems.Center" class=" rz-my-10 bg-opacity-25 flex-column " >
+            <RadzenImage Path="images/undraw_filter_re_sa16.png" Style="width: 10rem" AlternateText="generer" class="p-2" />
+            <RadzenButton Text="Generer data" class="mt-4 bg-danger" Click="@GeneratorPage" />
         </RadzenRow>
     </RadzenCard>
-
- 
-
-
-
 
 </RadzenRow>
 
 
 
-@code
-{
+    @code {
+        private void ImporterPage() { 
+            NavigationManager.NavigateTo("Importer");
+        }
+    private void GeneratorPage()
+    {
+        NavigationManager.NavigateTo("Generator");
+    }
+    }
 
- 
-}
+
 
 
 

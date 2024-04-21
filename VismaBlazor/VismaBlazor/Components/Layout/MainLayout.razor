@@ -1,26 +1,26 @@
 ﻿@inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Components.Authorization
 @using Radzen
 @using Radzen.Blazor
 
 <RadzenLayout>
-    <RadzenHeader class="bg-primary text-white">
-        <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="0" >
-            <RadzenImage Path="images/Visma_logo.png" Style="width: 10rem" AlternateText="community" />
+    <RadzenHeader class="bg-white">
+        <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="" >
+            <RadzenImage Path="images/Visma_logo.png" Style="width: 15rem" AlternateText="community" />
             
             
         </RadzenStack>
     </RadzenHeader>
 
-
-    <RadzenPanelMenu DisplayStyle="@(sidebarExpanded ? MenuItemDisplayStyle.IconAndText : MenuItemDisplayStyle.Icon)" ShowArrow="false"> 
+    <RadzenPanelMenu> 
         <RadzenPanel Text=" NavnEtternavn@visma.com"/>
         <RadzenPanelMenuItem Text="Hjem" Icon="home" Path="" />
         <RadzenPanelMenuItem Text="Import" Icon="file_upload" Path="Importer" />
         <RadzenPanelMenuItem Text="Generator" Icon="create" Path="Generator" />
         <RadzenPanelMenuItem Text="Logg ut" Icon="logout" Path="Login" class="" />
     </RadzenPanelMenu>
-   
 
+   
     <RadzenBody>
         <div class="rz-p-4">
            @Body
@@ -30,12 +30,37 @@
 
 
 </RadzenLayout>
-<RadzenFooter class="rz-text-align-center bg-primary text-white" >
-    <RadzenText TextStyle="TextStyle.Overline" class="text-white p-2">Visma ┃ Gruppe 5 ┃ @@2024 </RadzenText>
+<RadzenFooter class="rz-text-align-center shadow" >
+    <RadzenText TextStyle="TextStyle.Overline" class="p-2">Visma ┃ Gruppe 5 ┃ @@2024 </RadzenText>
 
 </RadzenFooter>
 @code {
     bool sidebarExpanded = true;
 
+    private string user = "";
+
+    [CascadingParameter]
+
+    private Task<AuthenticationState>? authenticationState { get; set; }
+    
+
+    protected override async void OnInitialized()
+    {
+        if (authenticationState is not null)
+        {
+            var state = await authenticationState;
+
+            user = state.User.Identity?.Name ?? "";
+
+        }
+
+        await base.OnInitializedAsync();
+
+
+    }
+
+    
+
+    
 
 }
