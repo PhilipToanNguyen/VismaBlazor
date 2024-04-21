@@ -4,20 +4,22 @@
 
 <RadzenLayout>
     <RadzenHeader class="bg-primary text-white">
-        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0" >
-
-            <RadzenText TextStyle="TextStyle.H3" class="text-white p-3">Visma</RadzenText>
+        <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="0" >
+            <RadzenImage Path="images/Visma_logo.png" Style="width: 10rem" AlternateText="community" />
+            
+            
         </RadzenStack>
     </RadzenHeader>
-     
-    <RadzenSidebar Responsive="false" class="" Style="width: max-content" @bind-Expanded="@sidebarExpanded">
-        <RadzenPanelMenu DisplayStyle="@(sidebarExpanded ? MenuItemDisplayStyle.IconAndText : MenuItemDisplayStyle.Icon)" ShowArrow="false">
-            <RadzenPanel Text= " NavnEtternavn@visma.com"></RadzenPanel>
-            <RadzenPanelMenuItem Text="Import" Icon="file_upload" Path="" />
-            <RadzenPanelMenuItem Text="Generator" Icon="create" Path="Generator" /> 
-            <RadzenPanelMenuItem Text="Logg ut" Icon="logout" Path="Login" class="" />
-        </RadzenPanelMenu>
-    </RadzenSidebar>
+
+
+    <RadzenPanelMenu DisplayStyle="@(sidebarExpanded ? MenuItemDisplayStyle.IconAndText : MenuItemDisplayStyle.Icon)" ShowArrow="false"> 
+        <RadzenPanel Text=" NavnEtternavn@visma.com"/>
+        <RadzenPanelMenuItem Text="Hjem" Icon="home" Path="" />
+        <RadzenPanelMenuItem Text="Import" Icon="file_upload" Path="Importer" />
+        <RadzenPanelMenuItem Text="Generator" Icon="create" Path="Generator" />
+        <RadzenPanelMenuItem Text="Logg ut" Icon="logout" Path="Login" class="" />
+    </RadzenPanelMenu>
+   
 
     <RadzenBody>
         <div class="rz-p-4">

@@ -1,0 +1,63 @@
+﻿
+@page "/"
+@inject IConfiguration config
+@inject VismaBlazor.HttpClientPost HttpClientPost
+@inject NavigationManager NavigationManager
+@using CsvHelper
+@using Newtonsoft.Json
+@using Radzen
+@using Radzen.Blazor
+@using Microsoft.JSInterop;
+@using System.IO
+@using System.Globalization
+@using System.Text
+@using Microsoft.AspNetCore.Components.Forms;
+@using Models
+
+@using System.Linq
+
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@attribute [StreamRendering]
+
+
+
+
+<PageTitle>Hjem</PageTitle>
+
+<RadzenRow AlignItems="AlignItems.Center" class="rz-text-align-center " Gap="2rem">
+    <RadzenCard class="bg-primary bg-opacity-10  " Style="width:15rem">
+        <RadzenRow AlignItems="AlignItems.Center" class=" rz-my-10 bg-opacity-25 flex-column">
+            <RadzenImage Path="images/undraw_add_files_re_v09g.svg" Style="width: 10rem" AlternateText="community" />
+            <RadzenButton Text="Importer fil" ButtonStyle="ButtonStyle.Primary"></RadzenButton>
+        </RadzenRow>
+    </RadzenCard>
+    <RadzenCard class="bg-primary bg-opacity-10" Style="width:15rem">
+        <RadzenRow AlignItems="AlignItems.Center" class=" rz-my-10 bg-opacity-25 flex-column ">
+            <RadzenImage Path="images/undraw_filter_re_sa16.svg" Style="width: 10rem" AlternateText="community" />
+            <RadzenButton Text="Generer data" ButtonStyle="ButtonStyle.Primary"></RadzenButton>
+        </RadzenRow>
+    </RadzenCard>
+
+ 
+
+
+
+
+</RadzenRow>
+
+
+
+@code
+{
+
+ 
+}
+
+
+
+
+
+
+
+
+

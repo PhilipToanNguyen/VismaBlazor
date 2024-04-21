@@ -1,4 +1,4 @@
-﻿@page "/"
+﻿@page "/Importer"
 @inject IConfiguration config
 @inject VismaBlazor.HttpClientPost HttpClientPost
 @inject NavigationManager NavigationManager
@@ -42,14 +42,14 @@ Dataen skal så vises i resultat page som åpnes etter importen er ferdig.
 
 @if (errors.Count > 0)
 
-{
-    <h2>Errors</h2>
-    <ul class="text-danger">
         @foreach (var error in errors)
         {
-            <li>@error</li>
-        }
-        </ul>
+            <RadzenAlert AlertStyle="AlertStyle.Danger" ShowIcon="false" Variant="Variant.Flat" Shade="Shade.Lighter">
+                Alert without message icon
+            </RadzenAlert>
+
+      
+       
 }
 
 
@@ -64,7 +64,7 @@ Dataen skal så vises i resultat page som åpnes etter importen er ferdig.
             <RadzenGridColumn TItem="BrukerRespons" Property="Tlf" Title="Telefon" Width="100px" />
             <RadzenGridColumn TItem="BrukerRespons" Property="Brukernavn" Title="Brukernavn" Width="120px" />
             <RadzenGridColumn TItem="BrukerRespons" Property="Passord" Title="Passord" Width="120px" />
-            <RadzenGridColumn TItem="BrukerRespons" Property="Epost" Title="E-post" Width="px" />
+            <RadzenGridColumn TItem="BrukerRespons" Property="Epost" Title="E-post" Width="120px" />
         </Columns>
     </RadzenGrid>
 
@@ -76,7 +76,7 @@ Dataen skal så vises i resultat page som åpnes etter importen er ferdig.
 } 
 else
 {
-    <RadzenAlert Title="Ingen data å vise." style="width: 100%" AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter ">
+    <RadzenAlert Title="Ingen data å vise." style="width: 100%" AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" AllowClose=false>
         Last opp en fil (TXT, CSV eller JSON)
     </RadzenAlert>
 }
@@ -126,6 +126,7 @@ else
         }
         catch (Exception ex)
         {
+
             Console.WriteLine($"Feil ved lasting av fil: {ex.Message}");
             throw; // Kast unntaket videre for å indikere at handlingen mislyktes
         }
