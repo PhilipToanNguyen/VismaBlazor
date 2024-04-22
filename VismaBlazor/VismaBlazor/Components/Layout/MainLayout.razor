@@ -4,37 +4,43 @@
 @using Radzen.Blazor
 
 <RadzenLayout>
-    <RadzenHeader class="bg-white">
+    <RadzenHeader class="bg-white ">
         <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="" >
-            <RadzenImage Path="images/logo.png" Style="width: 15rem" AlternateText="community" />
-            
-           
-            </RadzenStack>
-       
+            <RadzenImage Path="images/logo.png" Style="width:200px" AlternateText="logo" />
+
+            <RadzenPanel AlignItems="AlignItems.Center " class="shadow-none">
+                <RadzenPanelMenu class="">
+                    <RadzenRow AlignItems="AlignItems.Center" class="rz-text-align-center " Gap="2rem">
+                        <RadzenPanelMenuItem Text="Hjem" Icon="home" Path="" class="border-danger" />
+                        <RadzenPanelMenuItem Text="Logg ut" Icon="logout" Path="Login" class="border-danger" />
+                    </RadzenRow>
+                </RadzenPanelMenu>
+
+            </RadzenPanel>
+        
+        </RadzenStack>
+
     </RadzenHeader>
 
-    <RadzenPanelMenu> 
-        <RadzenPanel>@user</RadzenPanel>
-        <RadzenPanelMenuItem Text="Hjem" Icon="home" Path="" />
-        <RadzenPanelMenuItem Text="Import" Icon="file_upload" Path="Importer" />
-        <RadzenPanelMenuItem Text="Generator" Icon="create" Path="Generator" />
-        <RadzenPanelMenuItem Text="Logg ut" Icon="logout" Path="Login" class="" />
-    </RadzenPanelMenu>
+ 
 
+    
    
-    <RadzenBody>
+    <RadzenBody class="bg-white">
         <div class="rz-p-4">
            @Body
         </div>
     </RadzenBody>
 
 
+    <RadzenFooter class="rz-text-align-center shadow">
+        
+        <RadzenText TextStyle="TextStyle.Overline" class="p-2">Datagenerator ┃ Gruppe 5 ┃ @@2024 </RadzenText>
+
+    </RadzenFooter>
 
 </RadzenLayout>
-<RadzenFooter class="rz-text-align-center shadow" >
-    <RadzenText TextStyle="TextStyle.Overline" class="p-2">Datagenerator ┃ Gruppe 5 ┃ @@2024 </RadzenText>
 
-</RadzenFooter>
 @code {
     bool sidebarExpanded = true;
 
