@@ -4,9 +4,9 @@
 @using Radzen.Blazor
 
 <RadzenLayout>
-    <RadzenHeader class="">
+    <RadzenHeader class="bg-white">
         <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="">
-            <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" />
+            
             <RadzenImage Path="images/logo.png" Style="width: 15rem" AlternateText="community" />
         </RadzenStack>
     </RadzenHeader>
@@ -17,14 +17,13 @@
             <RadzenPanelMenuItem Text="Hjem" Icon="home" Path="" />
             <RadzenPanelMenuItem Text="Import" Icon="file_upload" Path="Importer" />
             <RadzenPanelMenuItem Text="Generator" Icon="create" Path="Generator" />
-            <RadzenPanelMenuItem Text="Logg ut" Icon="logout" Path="Login" class="" />
+            <RadzenPanelMenuItem Text="Logg ut" Icon="logout" Path="/Account/Logout" class="" />
         </RadzenPanelMenu>
     </RadzenSidebar>
 
     <RadzenBody>
         <div class="rz-p-4">
             @Body
-            HEI
         </div>
     </RadzenBody>
 
@@ -43,6 +42,8 @@
     [CascadingParameter]
 
     private Task<AuthenticationState>? authenticationState { get; set; }
+
+    
 
 
     protected override async void OnInitialized()

@@ -83,7 +83,7 @@ app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(typeof(VismaBlazor.Client._Imports).Assembly)
+    
     .AddInteractiveServerRenderMode();
 
 
