@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
 using VismaBlazor.AuthSync;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -85,6 +86,8 @@ app.UseAuthorization();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions { ForwardedHeaders = ForwardedHeaders.XForwardedProto });
 
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
