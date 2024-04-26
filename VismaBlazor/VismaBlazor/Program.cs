@@ -14,10 +14,10 @@ Environment.SetEnvironmentVariable("Domain", builder.Configuration.GetSection("A
 Environment.SetEnvironmentVariable("ClientId", builder.Configuration.GetSection("Auth0").GetSection("ClientId").Value);
 Environment.SetEnvironmentVariable("ClientSecret", builder.Configuration.GetSection("Auth0").GetSection("ClientSecret").Value);*/
 
-Environment.GetEnvironmentVariable("Audience");
-Environment.GetEnvironmentVariable("Domain");
-Environment.GetEnvironmentVariable("ClientId");
-Environment.GetEnvironmentVariable("ClientSecret");
+var audience = Environment.GetEnvironmentVariable("Audience");
+var domain = Environment.GetEnvironmentVariable("Domain");
+var clientid = Environment.GetEnvironmentVariable("ClientId");
+var clientsecret = Environment.GetEnvironmentVariable("ClientSecret");
 
 
 
@@ -31,8 +31,8 @@ builder.Services.AddRazorComponents()
 //Add services for authentication
 builder.Services.AddAuth0WebAppAuthentication(options =>
 {
-    options.Domain = builder.Configuration["Domain"];
-    options.ClientId = builder.Configuration["ClientId"];
+    options.Domain = domain;
+    options.ClientId = clientid;
 });
 
 builder.Services.AddCascadingAuthenticationState();
