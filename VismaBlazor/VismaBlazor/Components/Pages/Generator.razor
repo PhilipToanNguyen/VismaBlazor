@@ -8,19 +8,29 @@
 @using System;
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @attribute [StreamRendering]
-@attribute [Authorize]
+
 
 
 <PageTitle>Generator</PageTitle>
 
 
 <div>
+
+
     <RadzenCard class="text-center ">
         <div class="row">
             <div class="col-md-12 ">
-            <h3>Generator</h3>
+                <div class=" d-inline-flex">
+                    <div class=" pe-4">
+                        <RadzenButton> Skriv inn liste med ID </RadzenButton>
+                    </div>
+                     
+                    <div class=" ps-4">
+                        <RadzenButton> Autogenerer antall ID </RadzenButton>
+                    </div>
+                </div>
+            
                 <div class="px-4">
-
                     <RadzenAlert Title="Skriv inn NøkkelID manuelt"
                         AlertStyle="AlertStyle.Info" 
                         Variant="Variant.Flat" 

@@ -6,6 +6,7 @@ namespace VismaBlazor.Models
     {
 
         public string Fornavn { get; set; } = string.Empty;
+        public string Mellomnavn { get; set; } = string.Empty;
         public string Etternavn { get; set; } = string.Empty;
         public string Tlf { get; set; } = string.Empty;
         public string Id { get; set; } = string.Empty;

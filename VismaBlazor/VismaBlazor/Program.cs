@@ -10,10 +10,10 @@ using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
-/*Environment.SetEnvironmentVariable("Audience", builder.Configuration.GetSection("Auth0").GetSection("Audience").Value);
+Environment.SetEnvironmentVariable("Audience", builder.Configuration.GetSection("Auth0").GetSection("Audience").Value);
 Environment.SetEnvironmentVariable("Domain", builder.Configuration.GetSection("Auth0").GetSection("Domain").Value);
 Environment.SetEnvironmentVariable("ClientId", builder.Configuration.GetSection("Auth0").GetSection("ClientId").Value);
-Environment.SetEnvironmentVariable("ClientSecret", builder.Configuration.GetSection("Auth0").GetSection("ClientSecret").Value);*/
+Environment.SetEnvironmentVariable("ClientSecret", builder.Configuration.GetSection("Auth0").GetSection("ClientSecret").Value);
 
 var audience = Environment.GetEnvironmentVariable("Audience");
 var domain = Environment.GetEnvironmentVariable("Domain");
@@ -32,8 +32,11 @@ builder.Services.AddRazorComponents()
 //Add services for authentication
 builder.Services.AddAuth0WebAppAuthentication(options =>
 {
-    options.Domain = domain;
-    options.ClientId = clientid;
+    //options.Domain = domain;
+    //options.ClientId = clientid;
+
+    options.Domain = builder.Configuration["Auth0:Domain"];
+    options.ClientId = builder.Configuration["Auth0:ClientId"];
 });
 
 builder.Services.AddCascadingAuthenticationState();

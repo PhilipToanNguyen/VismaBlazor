@@ -5,15 +5,17 @@
 
 <RadzenLayout>
     <RadzenHeader class="bg-white">
-        <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="">
+        <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Style="margin: 10px">
             
-            <RadzenImage Path="images/logo.png" Style="width: 15rem" AlternateText="community" />
+            <RadzenImage Path="images/logo.png" Style="width: 10rem" AlternateText="community" />
         </RadzenStack>
     </RadzenHeader>
 
     <RadzenSidebar Responsive="false" Style="width: max-content">
         <RadzenPanelMenu DisplayStyle="@(sidebarExpanded ? MenuItemDisplayStyle.IconAndText : MenuItemDisplayStyle.Icon)" ShowArrow="false">
-            <RadzenPanel>@user</RadzenPanel>
+            <RadzenPanel>
+                @user
+            </RadzenPanel>
             <RadzenPanelMenuItem Text="Hjem" Icon="home" Path="" />
             <RadzenPanelMenuItem Text="Import" Icon="file_upload" Path="Importer" />
             <RadzenPanelMenuItem Text="Generator" Icon="create" Path="Generator" />
