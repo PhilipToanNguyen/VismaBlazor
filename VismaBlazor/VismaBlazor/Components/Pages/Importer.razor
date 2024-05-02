@@ -5,6 +5,7 @@
 @using CsvHelper
 @using Microsoft.AspNetCore.Authorization
 @using Newtonsoft.Json
+@using OpenQA.Selenium
 @using Radzen
 @using Radzen.Blazor
 @using Microsoft.JSInterop;
@@ -18,7 +19,7 @@
 
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @attribute [StreamRendering]
-@attribute [Authorize]
+
 
 
 
@@ -35,8 +36,13 @@ Dataen skal så vises i resultat page som åpnes etter importen er ferdig.
 
 
 <RadzenCard class="py-4 flex-column" Style="width: 100%">
-    <InputFile OnChange="LoadFiles" />
-    <RadzenButton Text="Upload" Click=@(args => Opplastning(file))  class="d-block pt-2 mt-4 bg-success" />  
+    <div id="lastOpp">
+        <InputFile id="lastOppID" OnChange="LoadFiles" />
+    </div>
+
+    <div id="oppLastning">
+        <RadzenButton id="oppLastningID" Text="Upload" Click=@(args => Opplastning(file)) class="d-block pt-2 mt-4 bg-success" />
+    </div>
 </RadzenCard>
 
 
@@ -49,32 +55,34 @@ Dataen skal så vises i resultat page som åpnes etter importen er ferdig.
             <RadzenAlert AlertStyle="AlertStyle.Danger" ShowIcon="false" Variant="Variant.Flat" Shade="Shade.Lighter">
                 Alert without message icon
             </RadzenAlert>
-
-      
-       
+        
+        
+        
 }
 
 
 @if (BrukerRes != null && BrukerRes.Any())
 {
-    <RadzenGrid TItem="BrukerRespons" Data="@BrukerRes"
+    
+    <RadzenGrid id="grid" TItem="BrukerRespons" Data="@BrukerRes"
                 AllowPaging="true" AllowSorting="true" AllowFiltering="true">
         <Columns>
-            <RadzenGridColumn TItem="BrukerRespons" Property="Id" Title="ID" Width="80px" Filterable="true" />
-            <RadzenGridColumn TItem="BrukerRespons" Property="Fornavn" Title="Fornavn" Width="100px" />
-            <RadzenGridColumn TItem="BrukerRespons" Property="Etternavn" Title="Etternavn" Width="100px" />
-            <RadzenGridColumn TItem="BrukerRespons" Property="Tlf" Title="Telefon" Width="100px" />
-            <RadzenGridColumn TItem="BrukerRespons" Property="Brukernavn" Title="Brukernavn" Width="120px" />
-            <RadzenGridColumn TItem="BrukerRespons" Property="Passord" Title="Passord" Width="120px" />
-            <RadzenGridColumn TItem="BrukerRespons" Property="Epost" Title="E-post" Width="120px" />
+            <RadzenGridColumn  TItem="BrukerRespons" Property="Id" Title="ID" Width="80px" Filterable="true" />
+            <RadzenGridColumn  TItem="BrukerRespons" Property="Fornavn" Title="Fornavn" Width="100px" />
+            <RadzenGridColumn  TItem="BrukerRespons" Property="Etternavn" Title="Etternavn" Width="100px" />
+            <RadzenGridColumn  TItem="BrukerRespons" Property="Tlf" Title="Telefon" Width="100px" />
+            <RadzenGridColumn  TItem="BrukerRespons" Property="Brukernavn" Title="Brukernavn" Width="120px" />
+            <RadzenGridColumn  TItem="BrukerRespons" Property="Passord" Title="Passord" Width="120px" />
+            <RadzenGridColumn  TItem="BrukerRespons" Property="Epost" Title="E-post" Width="120px" />
         </Columns>
     </RadzenGrid>
-
+   
    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="10" Wrap="FlexWrap.Wrap" class="pt-4">
-    <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Click=@(args => (EksporterJson())) Text="JSON" ButtonStyle="ButtonStyle.Success" />
-    <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Click=@(args => (Eksporter("csv"))) Text="CSV" ButtonStyle="ButtonStyle.Success" />
-    <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Click=@(args => (Eksporter("txt"))) Text="TXT" ButtonStyle="ButtonStyle.Success" />
+        <RadzenButton id="Jsonfil" Variant="Variant.Flat" Shade="Shade.Dark" Click=@(args => (EksporterJson())) Text="JSON" ButtonStyle="ButtonStyle.Success" />
+        <RadzenButton id="Csvfil" Variant="Variant.Flat" Shade="Shade.Dark" Click=@(args => (Eksporter("csv"))) Text="CSV" ButtonStyle="ButtonStyle.Success" />
+        <RadzenButton id="Txtfil" Variant="Variant.Flat" Shade="Shade.Dark" Click=@(args => (Eksporter("txt"))) Text="TXT" ButtonStyle="ButtonStyle.Success" />
   </RadzenStack>
+   
 } 
 else
 {
@@ -83,19 +91,18 @@ else
     </RadzenAlert>
 }
 
+
 @code
 {
 
-    Radzen.DataGridGridLines GridLines = Radzen.DataGridGridLines.Default;
-    RadzenDataGrid<BrukerRespons> ansatte;
 
-   
 
     public List<BrukerRespons>? BrukerRes;
     public long maxFileSize = 1024 * 1024 * 3;  // 3MB  List<Ansatte> ansatteListe = new List<Ansatte>();
     private List<string> errors = new List<string>();
     public IBrowserFile? file;
     public Random random = new Random();
+    private IWebDriver driver;
 
     //Radzen
     HorizontalAlign pagerHorizontalAlign = HorizontalAlign.Justify;
@@ -106,11 +113,8 @@ else
     [Inject]
     public IJSRuntime JSRuntime { get; set; }
 
-   
-    
 
-  
-    
+
     //1
     public async Task LoadFiles(InputFileChangeEventArgs e)
     {
@@ -133,7 +137,7 @@ else
             throw; // Kast unntaket videre for å indikere at handlingen mislyktes
         }
     }
-  
+
 
 
     public async Task<List<BrukerRespons>> Files(IBrowserFile file)
@@ -220,7 +224,7 @@ else
                 // Samler gyldige IDer
                 var gyldigId = brukerListe.Where(b => int.TryParse(b.Id, out _)).Select(b => b.Id).ToList();
 
-                if (gyldigId.Any())
+                if (gyldigId.Any() && file != null)
                 {
                     //komma-separert streng
                     string idString = String.Join(",", gyldigId);
@@ -257,8 +261,6 @@ else
             if (file != null)
             {
                 var fileExtension = Path.GetExtension(file.Name)?.ToLower();
-
-
                 if (fileExtension == ".txt" || fileExtension == ".csv") 
                 {
                     BrukerRes = await Files(file);
@@ -293,6 +295,7 @@ else
             errors.Add($"Error: {ex.Message}");
             throw;
         }
+
     }
 
 
@@ -369,6 +372,12 @@ else
                 var jsonString = JsonConvert.SerializeObject(jsonData);
 
                 await JsRuntimeMethod("data.json", jsonString);
+
+                Console.WriteLine(jsonString, jsonData);
+            }
+            else
+            {
+                Console.WriteLine("Ingenting");
             }
         }
         catch (Exception ex)

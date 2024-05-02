@@ -4,34 +4,48 @@
 @using Radzen.Blazor
 
 <RadzenLayout>
-    <RadzenHeader class="">
-        <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Gap="">
-            <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" />
-            <RadzenImage Path="images/logo.png" Style="width: 15rem" AlternateText="community" />
+    <RadzenHeader class="bg-white rz-p-2">
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="">
+        <div id="logo" class="">
+            <RadzenImage class="" Path="images/logo.png" Style="width: 12rem" AlternateText="community" />
+       </div>        
         </RadzenStack>
     </RadzenHeader>
 
+
     <RadzenSidebar Responsive="false" Style="width: max-content">
         <RadzenPanelMenu DisplayStyle="@(sidebarExpanded ? MenuItemDisplayStyle.IconAndText : MenuItemDisplayStyle.Icon)" ShowArrow="false">
-            <RadzenPanel>@user</RadzenPanel>
+           
+      
+            @if (user != string.Empty)
+            {
+                <RadzenPanel>@user</RadzenPanel>
+            }
+            else if (user == string.Empty)
+            {
+                <RadzenPanel> Ikke pålogget</RadzenPanel>
+            }
+
             <RadzenPanelMenuItem Text="Hjem" Icon="home" Path="" />
             <RadzenPanelMenuItem Text="Import" Icon="file_upload" Path="Importer" />
             <RadzenPanelMenuItem Text="Generator" Icon="create" Path="Generator" />
-            <RadzenPanelMenuItem Text="Logg ut" Icon="logout" Path="Login" class="" />
+            <RadzenPanelMenuItem Text="Logg ut" Icon="logout" Path=""  />
         </RadzenPanelMenu>
     </RadzenSidebar>
 
     <RadzenBody>
         <div class="rz-p-4">
             @Body
-            HEI
+            
         </div>
     </RadzenBody>
 
 
 
 </RadzenLayout>
-<RadzenFooter class="rz-text-align-center shadow">
+
+<RadzenFooter class="rz-text-align-center shadow-lg">
+
     <RadzenText TextStyle="TextStyle.Overline" class="p-2">Datagenerator ┃ Gruppe 5 ┃ @@2024 </RadzenText>
 
 </RadzenFooter>

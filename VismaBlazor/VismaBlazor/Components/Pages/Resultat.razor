@@ -10,7 +10,7 @@
 @inject NavigationManager NavigationManager
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @attribute [StreamRendering]
-@attribute [Authorize]
+
 
 
 <PageTitle>Resultat</PageTitle>
@@ -41,15 +41,15 @@
     </RadzenGrid>
 
    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="10" Wrap="FlexWrap.Wrap" class="pt-4">
-    <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Click=@(args => (EksporterJson())) Text="JSON" ButtonStyle="ButtonStyle.Success" />
-    <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Click=@(args => (Eksporter("csv"))) Text="CSV" ButtonStyle="ButtonStyle.Success" />
-    <RadzenButton Variant="Variant.Flat" Shade="Shade.Dark" Click=@(args => (Eksporter("txt"))) Text="TXT" ButtonStyle="ButtonStyle.Success" />
+        <RadzenButton id="Jsonfil2" Variant="Variant.Flat" Shade="Shade.Dark" Click=@(args => (EksporterJson())) Text="JSON" ButtonStyle="ButtonStyle.Success" />
+        <RadzenButton id="Csvfil2" Variant="Variant.Flat" Shade="Shade.Dark" Click=@(args => (Eksporter("csv"))) Text="CSV" ButtonStyle="ButtonStyle.Success" />
+        <RadzenButton id="Txtfil2" Variant="Variant.Flat" Shade="Shade.Dark" Click=@(args => (Eksporter("txt"))) Text="TXT" ButtonStyle="ButtonStyle.Success" />
   </RadzenStack>
 } 
 else
 {
     <RadzenAlert Title="Ingen data å vise." AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter">
-        Last opp en fil (TXT, CSV eller JSON)
+        ""
     </RadzenAlert>
 }
 

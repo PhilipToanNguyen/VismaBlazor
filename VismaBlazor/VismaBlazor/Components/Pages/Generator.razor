@@ -8,7 +8,7 @@
 @using System;
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @attribute [StreamRendering]
-@attribute [Authorize]
+
 
 
 <PageTitle>Generator</PageTitle>
@@ -34,6 +34,7 @@
               
                 <div class="p-4">        
                            <textarea 
+                               id="generatormanuelt"
                                value="@flereids" @onchange="@((args) => flereids = args?.Value?.ToString())" 
                                class=" border-1 border rounded-3 shadow-sm w-100 h-50 "
                                rows="8" 
@@ -41,7 +42,7 @@
                                placeholder=" F.eks: 1,3,6,20,11"   />    
                 </div>
 
-                <div class="px-4">
+                <div class="px-4" >
                         <RadzenAlert Title="Skriv inn antall nøkler du ønsker å generere"          
                             AlertStyle="AlertStyle.Info" 
                             Variant="Variant.Flat" 
@@ -51,12 +52,12 @@
                 </div>
 
 
-                <div class="col-md-12 p-2">
-                        <RadzenTextBox Value="@value" Change="@OnChange" Placeholder="Skriv antall brukere" style="width: 200px" />
+                <div class="col-md-12 p-2" >
+                    <RadzenTextBox id="generatorantall" typeof="number" Value="@value" Change="@OnChange" Placeholder="Skriv antall brukere" style="width: 200px" />
                 </div>
 
                 <div class="col-md-12 p-2 text-center">                      
-                         <RadzenButton Text="Generer" ButtonStyle="ButtonStyle.Success" Click="@SendId" style="width: 25%" />
+                         <RadzenButton id="genererKnapp" Text="Generer" ButtonStyle="ButtonStyle.Success" Click="@SendId" style="width: 25%" />
                 </div>
               
             </div>
