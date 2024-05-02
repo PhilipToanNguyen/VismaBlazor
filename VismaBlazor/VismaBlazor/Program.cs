@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
 using VismaBlazor.AuthSync;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,11 @@ Environment.SetEnvironmentVariable("Audience", builder.Configuration.GetSection(
 Environment.SetEnvironmentVariable("Domain", builder.Configuration.GetSection("Auth0").GetSection("Domain").Value);
 Environment.SetEnvironmentVariable("ClientId", builder.Configuration.GetSection("Auth0").GetSection("ClientId").Value);
 Environment.SetEnvironmentVariable("ClientSecret", builder.Configuration.GetSection("Auth0").GetSection("ClientSecret").Value);
+
+var audience = Environment.GetEnvironmentVariable("Audience");
+var domain = Environment.GetEnvironmentVariable("Domain");
+var clientid = Environment.GetEnvironmentVariable("ClientId");
+var clientsecret = Environment.GetEnvironmentVariable("ClientSecret");
 
 
 
@@ -26,6 +32,9 @@ builder.Services.AddRazorComponents()
 //Add services for authentication
 builder.Services.AddAuth0WebAppAuthentication(options =>
 {
+    //options.Domain = domain;
+    //options.ClientId = clientid;
+
     options.Domain = builder.Configuration["Auth0:Domain"];
     options.ClientId = builder.Configuration["Auth0:ClientId"];
 });
@@ -81,9 +90,11 @@ app.UseAuthorization();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
+app.UseForwardedHeaders(new ForwardedHeadersOptions { ForwardedHeaders = ForwardedHeaders.XForwardedProto });
+
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(typeof(VismaBlazor.Client._Imports).Assembly)
+    
     .AddInteractiveServerRenderMode();
 
 

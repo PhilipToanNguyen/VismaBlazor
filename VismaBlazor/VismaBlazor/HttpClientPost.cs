@@ -31,7 +31,7 @@ namespace VismaBlazor
             using (var client = new HttpClient())
 
             {
-                var endpoint = new Uri("https://vismaapi-d8eec0554dca.herokuapp.com/velgAntall/test");
+                var endpoint = new Uri("https://vismaapi-d8eec0554dca.herokuapp.com/velgAntall/test?domene=BONUS.NO");
 
                     client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
                     
@@ -53,8 +53,8 @@ namespace VismaBlazor
                     var response = await res.Content.ReadAsStringAsync();
                     Console.WriteLine("BOOM BABY");
                     BrukerRes = JsonConvert.DeserializeObject<List<BrukerRespons>>(response);
-                  
-                }
+                        Console.WriteLine(res.StatusCode);
+                    }
 
                 else
                 {
@@ -77,10 +77,11 @@ namespace VismaBlazor
 
             using (var client = new HttpClient())
             {
-                var endpoint = new Uri("https://vismaapi-d8eec0554dca.herokuapp.com/velgID");
+                var endpoint = new Uri("https://vismaapi-d8eec0554dca.herokuapp.com/velgID?domene=HEISANN.COM");
                 //client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
                     client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                   
                     //client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
 
                     var nyIdJson = JsonConvert.SerializeObject(flereIds);
@@ -94,9 +95,9 @@ namespace VismaBlazor
                     var response = await res.Content.ReadAsStringAsync();
                     Console.WriteLine("BOOM BABY");
                     BrukerRes = JsonConvert.DeserializeObject<List<BrukerRespons>>(response);
+                        Console.WriteLine(res.StatusCode);
 
-
-                }
+                    }
 
 
                 else

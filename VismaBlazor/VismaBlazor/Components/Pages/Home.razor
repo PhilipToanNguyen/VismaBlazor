@@ -17,7 +17,7 @@
 
 @using System.Linq
 
-@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@rendermode @(new InteractiveServerRenderMode(prerender: true))
 @attribute [StreamRendering]
 
 
@@ -45,7 +45,9 @@
 
 
     @code {
-        private void ImporterPage() { 
+    //@attribute [Authorize]
+
+    private void ImporterPage() { 
             NavigationManager.NavigateTo("Importer");
         }
     private void GeneratorPage()

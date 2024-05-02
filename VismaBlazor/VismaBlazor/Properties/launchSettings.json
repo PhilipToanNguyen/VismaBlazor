@@ -8,7 +8,7 @@
       },
       "dotnetRunMessages": true,
       "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
-      "applicationUrl": "http://localhost:5249"
+      "applicationUrl": "https://localhost:5249"
     },
     "https": {
       "commandName": "Project",
@@ -18,7 +18,7 @@
       },
       "dotnetRunMessages": true,
       "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
-      "applicationUrl": "https://localhost:7042;http://localhost:5249"
+      "applicationUrl": "https://localhost:7042;https://localhost:5249"
     },
     "IIS Express": {
       "commandName": "IISExpress",
@@ -34,9 +34,20 @@
       "launchUrl": "https://localhost:7042",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "https://localhost:7042;http://localhost:5249"
+        "ASPNETCORE_URLS": "https://localhost:7042;https://localhost:5249"
       },
       "distributionName": ""
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchBrowser": true,
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "environmentVariables": {
+        "ASPNETCORE_HTTPS_PORTS": "8081",
+        "ASPNETCORE_HTTP_PORTS": "8080"
+      },
+      "publishAllPorts": true,
+      "useSSL": true
     }
   },
   "$schema": "http://json.schemastore.org/launchsettings.json",
@@ -44,7 +55,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:46383",
+      "applicationUrl": "https://localhost:46383",
       "sslPort": 44319
     }
   }

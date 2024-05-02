@@ -4,13 +4,25 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>4ec6a6c9-e493-4dc4-a714-9bb41867b7cf</UserSecretsId>
+    <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
+    <DockerfileContext>..\..</DockerfileContext>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VismaBlazor.Client\VismaBlazor.Client.csproj" />
+    <None Include="wwwroot\images\undraw_data_processing_yrrv.svg" />
+    <None Include="wwwroot\images\undraw_personal_data_re_ihde.svg" />
+    <None Include="wwwroot\images\user-group-17.png" />
+    <None Include="wwwroot\images\usergroup.svg" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\VismaBlazor.Client\VismaBlazor.Client.csproj" />
     <PackageReference Include="Auth0.AspNetCore.Authentication" Version="1.4.1" />
     <PackageReference Include="CsvHelper" Version="31.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
     <PackageReference Include="Moq" Version="4.20.70" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Radzen.Blazor" Version="4.24.7" />
