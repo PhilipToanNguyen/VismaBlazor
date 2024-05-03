@@ -83,6 +83,8 @@ app.MapGet("/Account/Logout", async (HttpContext context, string redirectUri = "
     await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 });
 
+app.UseHttpsRedirection();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -94,8 +96,6 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions { ForwardedHeaders = Forward
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddInteractiveServerRenderMode();
-
-app.UseHttpsRedirection();
 
 
 app.Run();
