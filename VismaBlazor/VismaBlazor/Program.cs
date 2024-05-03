@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
 using VismaBlazor.AuthSync;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -80,6 +81,8 @@ app.MapGet("/Account/Logout", async (HttpContext context, string redirectUri = "
 
     await context.SignOutAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
     await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+    return new RedirectResult(redirectUri);
 });
 
 app.UseHttpsRedirection();
