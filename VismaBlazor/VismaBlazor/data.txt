@@ -1,3 +1,3 @@
 id,fornavn,etternavn,tlf,brukernavn,passord,epost
-1,Ambisiøs,Albatross,Duetrost,34452710,AmDu1,Mango96,AmDu1@HEISANN.COM
-2,Aktiv,Chili,Stein,10702912,AkSt2,Pølse89,AkSt2@HEISANN.COM
+1,Blå-Egoistisk,,Ball,27620972,BlBa1,Gresshoppe92,BlBa1@HEISANN.COM
+2,Sjarmerende-Eksentrisk,,Eple,31484916,SjEp2,Tåke38,SjEp2@HEISANN.COM

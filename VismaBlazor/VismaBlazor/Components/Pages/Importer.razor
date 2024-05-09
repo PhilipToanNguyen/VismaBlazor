@@ -46,8 +46,6 @@ Dataen skal så vises i resultat page som åpnes etter importen er ferdig.
 </RadzenCard>
 
 
-
-
 @if (errors.Count > 0)
 
         @foreach (var error in errors)
@@ -55,9 +53,7 @@ Dataen skal så vises i resultat page som åpnes etter importen er ferdig.
             <RadzenAlert AlertStyle="AlertStyle.Danger" ShowIcon="false" Variant="Variant.Flat" Shade="Shade.Lighter">
                 Alert without message icon
             </RadzenAlert>
-        
-        
-        
+                      
 }
 
 
@@ -94,21 +90,10 @@ else
 
 @code
 {
-
-
-
     public List<BrukerRespons>? BrukerRes;
-    public long maxFileSize = 1024 * 1024 * 3;  // 3MB  List<Ansatte> ansatteListe = new List<Ansatte>();
     private List<string> errors = new List<string>();
     public IBrowserFile? file;
-    public Random random = new Random();
-    private IWebDriver driver;
-
-    //Radzen
-    HorizontalAlign pagerHorizontalAlign = HorizontalAlign.Justify;
-    PagerPosition pagerPosition = PagerPosition.Bottom;
-
-
+  
     // Inject IJSRuntime
     [Inject]
     public IJSRuntime JSRuntime { get; set; }
@@ -132,12 +117,10 @@ else
         }
         catch (Exception ex)
         {
-
             Console.WriteLine($"Feil ved lasting av fil: {ex.Message}");
             throw; // Kast unntaket videre for å indikere at handlingen mislyktes
         }
     }
-
 
 
     public async Task<List<BrukerRespons>> Files(IBrowserFile file)
@@ -146,7 +129,6 @@ else
         {
             return new List<BrukerRespons>();
         }
-
         List<BrukerRespons> idListe = new List<BrukerRespons>();
         Console.WriteLine($"Filen '{file.Name}' laster opp..");
 
@@ -202,6 +184,7 @@ else
 
         return idListe;
     }
+
     public async Task<List<BrukerRespons>> FilesJson(IBrowserFile file)
     {
         if (file == null)
@@ -238,6 +221,7 @@ else
                 }
             }
         }
+
         catch (JsonException e)
         {
             Console.WriteLine($"Feil ved parsing av JSON: {e.Message}");
@@ -297,7 +281,6 @@ else
         }
 
     }
-
 
     public async Task Eksporter(string fileExtension)
     {
