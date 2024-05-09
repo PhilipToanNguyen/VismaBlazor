@@ -7,13 +7,14 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
 using VismaBlazor.AuthSync;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
-Environment.SetEnvironmentVariable("Audience", builder.Configuration.GetSection("Auth0").GetSection("Audience").Value);
+/* Environment.SetEnvironmentVariable("Audience", builder.Configuration.GetSection("Auth0").GetSection("Audience").Value);
 Environment.SetEnvironmentVariable("Domain", builder.Configuration.GetSection("Auth0").GetSection("Domain").Value);
 Environment.SetEnvironmentVariable("ClientId", builder.Configuration.GetSection("Auth0").GetSection("ClientId").Value);
-Environment.SetEnvironmentVariable("ClientSecret", builder.Configuration.GetSection("Auth0").GetSection("ClientSecret").Value);
+Environment.SetEnvironmentVariable("ClientSecret", builder.Configuration.GetSection("Auth0").GetSection("ClientSecret").Value); */
 
 var audience = Environment.GetEnvironmentVariable("Audience");
 var domain = Environment.GetEnvironmentVariable("Domain");
@@ -35,8 +36,8 @@ builder.Services.AddAuth0WebAppAuthentication(options =>
     //options.Domain = domain;
     //options.ClientId = clientid;
 
-    options.Domain = builder.Configuration["Auth0:Domain"];
-    options.ClientId = builder.Configuration["Auth0:ClientId"];
+    options.Domain = domain;
+    options.ClientId = clientid;
 });
 
 builder.Services.AddCascadingAuthenticationState();
@@ -80,6 +81,8 @@ app.MapGet("/Account/Logout", async (HttpContext context, string redirectUri = "
 
     await context.SignOutAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
     await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+    return new RedirectResult(redirectUri);
 });
 
 app.UseHttpsRedirection();
