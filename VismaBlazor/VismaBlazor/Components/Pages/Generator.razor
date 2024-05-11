@@ -8,7 +8,7 @@
 @using System;
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @attribute [StreamRendering]
-@attribute [Authorize]
+
 
 
 
@@ -21,11 +21,11 @@
             <div class="col-md-12 ">
                 <div class=" d-inline-flex">
                     <div class=" pe-4">
-                        <RadzenButton class="bg-danger" Click="@vismanuell"> Skriv inn liste med ID </RadzenButton>
+                        <RadzenButton id="FaneKnappManuelt" class="bg-danger" Click="@vismanuell"> Skriv inn liste med ID </RadzenButton>
                     </div>
                      
                     <div class=" ps-4">
-                        <RadzenButton class="bg-danger" Click="@visantid"> Autogenerer antall ID </RadzenButton>
+                        <RadzenButton id="FaneKnappID" class="bg-danger" Click="@visantid"> Autogenerer antall ID </RadzenButton>
                     </div>
                 </div>
 
@@ -61,7 +61,7 @@
                 </div>
 
                 <div> 
-                    <RadzenTextBox id="generatormanuelt" 
+                    <RadzenTextBox id="generatordomain1" 
                         Value="@domain" 
                         Change=@(args => domain = args)
                         Placeholder="F.eks: Generator.com" 
@@ -87,7 +87,7 @@
                     </div>
 
                     <div class="col-md-12 p-2">
-                        <RadzenNumeric TValue="int" Value="@ids" Change=@(args => ids = args) Placeholder="F.eks: 10" style="width: 200px" />
+                        <RadzenNumeric id="generatorantall" TValue="int" Value="@ids" Change=@(args => ids = args) Placeholder="F.eks: 10" style="width: 200px" />
                     </div>
 
                     <div>
@@ -100,7 +100,7 @@
 
 
                     <div>
-                        <RadzenTextBox id="generatordomain"
+                        <RadzenTextBox id="generatordomainID"
                                    Value="@domain2"
                                    Change=@(args => domain2 = args)
                                    Placeholder="F.eks: Generator.com"
