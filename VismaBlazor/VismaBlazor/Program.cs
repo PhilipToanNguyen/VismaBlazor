@@ -33,11 +33,11 @@ builder.Services.AddRazorComponents()
 //Add services for authentication
 builder.Services.AddAuth0WebAppAuthentication(options =>
 {
-    options.Domain = domain;
-    options.ClientId = clientid;
+    // options.Domain = domain;
+    // options.ClientId = clientid;
 
-    //options.Domain = builder.Configuration["Auth0:Domain"];
-    //options.ClientId = builder.Configuration["Auth0:ClientId"];
+    options.Domain = builder.Configuration["Auth0:Domain"];
+    options.ClientId = builder.Configuration["Auth0:ClientId"];
 
 });
 
