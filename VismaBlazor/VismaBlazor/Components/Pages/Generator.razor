@@ -8,7 +8,7 @@
 @using System;
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @attribute [StreamRendering]
-
+@attribute [Authorize]
 
 
 
@@ -16,29 +16,28 @@
 
 
 <div>
-
-
     <RadzenCard class="text-center ">
         <div class="row">
             <div class="col-md-12 ">
                 <div class=" d-inline-flex">
                     <div class=" pe-4">
-                        <RadzenButton> Skriv inn liste med ID </RadzenButton>
+                        <RadzenButton class="bg-danger" Click="@vismanuell"> Skriv inn liste med ID </RadzenButton>
                     </div>
                      
                     <div class=" ps-4">
-                        <RadzenButton> Autogenerer antall ID </RadzenButton>
+                        <RadzenButton class="bg-danger" Click="@visantid"> Autogenerer antall ID </RadzenButton>
                     </div>
                 </div>
-            
+
+            @if (vismanuellgen == true) {
+
                 <div class="px-4">
                     <RadzenAlert Title="Skriv inn NøkkelID manuelt"
-                        AlertStyle="AlertStyle.Info" 
-                        Variant="Variant.Flat" 
+                        AlertStyle="AlertStyle.Info"
+                        Variant="Variant.Flat"
                         Shade="Shade.Lighter"
                         AllowClose=false>
                         F.eks: 1,2,3,4 eller 3,8,16,3,1
-
                     </RadzenAlert>
                 </div>
                
@@ -54,27 +53,71 @@
                 </div>
 
                 <div class="px-4" >
-                        <RadzenAlert Title="Skriv inn antall nøkler du ønsker å generere"          
+                        <RadzenAlert Title="Skriv inn domene for mail"          
                             AlertStyle="AlertStyle.Info" 
                             Variant="Variant.Flat" 
                             Shade="Shade.Lighter"
-                            AllowClose=false>
-                    </RadzenAlert>
+                            AllowClose=false />
                 </div>
 
-
-                <div class="col-md-12 p-2" >
-                    <RadzenTextBox id="generatorantall" typeof="number" Value="@value" Change="@OnChange" Placeholder="Skriv antall brukere" style="width: 200px" />
+                <div> 
+                    <RadzenTextBox id="generatormanuelt" 
+                        Value="@domain" 
+                        Change=@(args => domain = args)
+                        Placeholder="F.eks: Generator.com" 
+                        style="width: 200px" />
                 </div>
 
                 <div class="col-md-12 p-2 text-center">                      
-                         <RadzenButton id="genererKnapp" Text="Generer" ButtonStyle="ButtonStyle.Success" Click="@SendId" style="width: 25%" />
+                    <RadzenButton id="genererKnapp" Text="Generer" ButtonStyle="ButtonStyle.Success" Click="@SendIdManuell" style="width: 25%" />
                 </div>
-              
+              } 
+
+                @if (visantidgen == true)
+                {
+                   
+                    <div>
+                        <RadzenAlert Title="Skriv inn antall ID som skal genereres"
+                            AlertStyle="AlertStyle.Info"
+                            Variant="Variant.Flat"
+                            Shade="Shade.Lighter"
+                            AllowClose=false>
+                            F.eks: 10
+                        </RadzenAlert>
+                    </div>
+
+                    <div class="col-md-12 p-2">
+                        <RadzenNumeric TValue="int" Value="@ids" Change=@(args => ids = args) Placeholder="F.eks: 10" style="width: 200px" />
+                    </div>
+
+                    <div>
+                        <RadzenAlert Title="Skriv inn domene for mail"
+                            AlertStyle="AlertStyle.Info"
+                            Variant="Variant.Flat"
+                            Shade="Shade.Lighter"
+                            AllowClose=false />
+                    </div>
+
+
+                    <div>
+                        <RadzenTextBox id="generatordomain"
+                                   Value="@domain2"
+                                   Change=@(args => domain2 = args)
+                                   Placeholder="F.eks: Generator.com"
+                                   style="width: 200px" />
+                </div>
+
+                <div class="col-md-12 p-2 text-center">                      
+                    <RadzenButton id="genererKnapp2" Text="Generer" ButtonStyle="ButtonStyle.Success" Click="@SendIdAuto" style="width: 25%" />
+                </div>
+                }
+
             </div>
-        </div>
+         </div>
+                
     </RadzenCard>
 </div>
+
 
 @if (load == true)
 {
@@ -83,15 +126,17 @@
 
 @if (error == true)
 {
-    <RadzenAlert Text="Vennligst skriv i ett av feltene" Severity="Severity.Warning" AlertStyle="AlertStyle.Danger" />
+    <RadzenAlert Text="Vennligst skriv i ett av feltene" Severity="Severity.Warning" AlertStyle="AlertStyle.Danger" AllowClose="false" />
 }
 
 @code {
-
-
     private int ids;
     private string? flereids { get; set; }
     private string? value;
+    private string? domain { get; set; }
+    public string? domain2 { get; set; }    
+    private Boolean visantidgen { get; set; }
+    private Boolean vismanuellgen { get; set; }
     private Boolean? error { get; set; }
     private Boolean load { get; set; }
     
@@ -102,45 +147,64 @@
 
     }
 
+    protected override async Task OnInitializedAsync()
+    {
+        
+      vismanuellgen = true;
+        
+    }
+
+    private void visantid() {
+        visantidgen = true;
+        vismanuellgen = false;
+
+    }
+
+    private void vismanuell() {
+        vismanuellgen = true;
+        visantidgen = false;
+
+    }
+
     public IdList[]? idobject;
 
- 
-
-    public async Task SendId()
+    public async Task SendIdManuell()
     {
 
-        if (ids != 0 && flereids != null)
+        if (domain != null && flereids != null)
         {
             load = true;
-            await HttpClientPost.Post(ids);
-            await HttpClientPost.PostFlereId(flereids);
-            
-            NavigationManager.NavigateTo("/Resultat");
-        }
 
-        else if (ids != 0)
-        {
-            load = true;
-            await HttpClientPost.Post(ids);  
             
+            
+            await HttpClientPost.PostFlereId(flereids, domain);
             NavigationManager.NavigateTo("/Resultat");
+            
         }
+        else {
+            error = true;
+        }
+    }
 
-        else if (flereids != null)
+    public async Task SendIdAuto()
+    {
+
+       
+        if (domain2 != null && ids != 0)
         {
             load = true;
-            await HttpClientPost.PostFlereId(flereids);
-            
+
+                
+
+            await HttpClientPost.Post(ids, domain2);
             NavigationManager.NavigateTo("/Resultat");
         }
-   
-        else 
+        else
         {
             error = true;
         }
 
-      
-}
+    }
 
     }
 

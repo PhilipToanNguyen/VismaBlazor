@@ -20,7 +20,7 @@ namespace VismaBlazor
         private List<BrukerRespons>? BrukerRes;
         
 
-        public async Task Post(int Ids)
+        public async Task Post(int Ids, string domene)
 
         {
             var token = await HentAuth();
@@ -31,7 +31,7 @@ namespace VismaBlazor
             using (var client = new HttpClient())
 
             {
-                var endpoint = new Uri("https://vismaapi-d8eec0554dca.herokuapp.com/velgAntall/test?domene=BONUS.NO");
+                var endpoint = new Uri("https://vismaapi-d8eec0554dca.herokuapp.com/velgAntall/test?domene=" + domene);
 
                     client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
                     
@@ -68,16 +68,17 @@ namespace VismaBlazor
 
         }
 
-        public async Task PostFlereId(string flereIds) 
+        public async Task PostFlereId(string flereIds, string domene) 
         {
             var token = await HentAuth();
             Console.WriteLine(token);
             if (token != null)
             { 
-
+            
             using (var client = new HttpClient())
             {
-                var endpoint = new Uri("https://vismaapi-d8eec0554dca.herokuapp.com/velgID?domene=HEISANN.COM");
+                
+                var endpoint = new Uri("https://vismaapi-d8eec0554dca.herokuapp.com/velgID?domene=" + domene);
                 //client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
                     client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
@@ -142,16 +143,11 @@ namespace VismaBlazor
                 {
                     string response = await res.Content.ReadAsStringAsync();
                     
-                 
-
-                   
 
                     dynamic jsonResponse = JsonConvert.DeserializeObject(response);
                     return  jsonResponse.access_token;
                   
-                    
-                    
-                    
+
                 }
 
                 else
