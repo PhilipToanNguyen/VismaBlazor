@@ -94,7 +94,7 @@ else
                 var jsonData = BrukerRes;
 
                 // Serialisere listen til JSON
-                var jsonString = JsonConvert.SerializeObject(jsonData);
+                var jsonString = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
 
                 await JsRuntimeMethod("data.json", jsonString);
             }
