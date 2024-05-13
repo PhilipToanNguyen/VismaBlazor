@@ -80,10 +80,10 @@ Dataen skal så vises i resultat page som åpnes etter importen er ferdig.
 {
 <div class="pb-4">
     <RadzenGrid id="grid" TItem="BrukerRespons" Data="@BrukerRes"
-                AllowPaging="true" AllowSorting="true" AllowFiltering="true">
+                AllowPaging="true" AllowSorting="true">
         <Columns>
-            <RadzenGridColumn  TItem="BrukerRespons" Property="Id" Title="ID" Width="80px" Filterable="true" />
-            <RadzenGridColumn TItem="BrukerRespons" Property="nyId" Title="NyID" Width="80px" />
+            <RadzenGridColumn  TItem="BrukerRespons" Property="Id" Title="ID" Width="80px" />
+            <RadzenGridColumn TItem="BrukerRespons" Property="NyId" Title="NyID" Width="80px" />
             <RadzenGridColumn  TItem="BrukerRespons" Property="Fornavn" Title="Fornavn" Width="100px" />
             <RadzenGridColumn TItem="BrukerRespons" Property="Mellomnavn" Title="Mellomnavn" Width="100px" />
             <RadzenGridColumn  TItem="BrukerRespons" Property="Etternavn" Title="Etternavn" Width="100px" />
