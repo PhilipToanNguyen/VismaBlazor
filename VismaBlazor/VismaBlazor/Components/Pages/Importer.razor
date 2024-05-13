@@ -78,7 +78,7 @@ Dataen skal så vises i resultat page som åpnes etter importen er ferdig.
 
 @if (BrukerRes != null && BrukerRes.Any())
 {
-    
+<div class="pb-4">
     <RadzenGrid id="grid" TItem="BrukerRespons" Data="@BrukerRes"
                 AllowPaging="true" AllowSorting="true" AllowFiltering="true">
         <Columns>
@@ -98,7 +98,7 @@ Dataen skal så vises i resultat page som åpnes etter importen er ferdig.
         <RadzenButton id="Csvfil" Variant="Variant.Flat" Shade="Shade.Dark" Click=@(args => (Eksporter("csv"))) Text="CSV" ButtonStyle="ButtonStyle.Success" />
         <RadzenButton id="Txtfil" Variant="Variant.Flat" Shade="Shade.Dark" Click=@(args => (Eksporter("txt"))) Text="TXT" ButtonStyle="ButtonStyle.Success" />
   </RadzenStack>
-   
+   </div>
 } 
 else
 {

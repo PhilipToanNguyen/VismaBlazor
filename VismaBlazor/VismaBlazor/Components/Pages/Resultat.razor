@@ -28,6 +28,7 @@
 
 @if (BrukerRes != null && BrukerRes.Any())
 {
+<div class="pb-4">
     <RadzenGrid TItem="BrukerRespons" Data="@BrukerRes" Style="width: 100%"
                 AllowPaging="true" AllowSorting="true">
         <Columns>
@@ -47,6 +48,7 @@
         <RadzenButton id="Csvfil2" Variant="Variant.Flat" Shade="Shade.Dark" Click=@(args => (Eksporter("csv"))) Text="CSV" ButtonStyle="ButtonStyle.Success" />
         <RadzenButton id="Txtfil2" Variant="Variant.Flat" Shade="Shade.Dark" Click=@(args => (Eksporter("txt"))) Text="TXT" ButtonStyle="ButtonStyle.Success" />
   </RadzenStack>
+  </div>
 } 
 else
 {

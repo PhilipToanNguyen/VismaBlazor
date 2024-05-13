@@ -13,33 +13,21 @@ using System.Linq.Dynamic.Core.Tokenizer;
 
 namespace VismaBlazor
 {
-    
     public class HttpClientPost
     {
-
         private List<BrukerRespons>? BrukerRes;
-        
-
         public async Task Post(int Ids, string domene)
-
         {
             var token = await HentAuth();
             Console.WriteLine(token);
             if (token != null)
             { 
-
             using (var client = new HttpClient())
-
             {
-                var endpoint = new Uri("https://vismaapi-d8eec0554dca.herokuapp.com/velgAntall/test?domene=" + domene);
-
+                var endpoint = new Uri("https://vismaapi-d8eec0554dca.herokuapp.com/velgAntall?domene=" + domene);
                     client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-                    
                     //client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
-
-
                     Console.WriteLine("Ids:  ");
-
 
                 var nyIdJson = JsonConvert.SerializeObject(Ids);
                 Console.WriteLine(nyIdJson);
