@@ -83,6 +83,7 @@ Dataen skal så vises i resultat page som åpnes etter importen er ferdig.
                 AllowPaging="true" AllowSorting="true" AllowFiltering="true">
         <Columns>
             <RadzenGridColumn  TItem="BrukerRespons" Property="Id" Title="ID" Width="80px" Filterable="true" />
+            <RadzenGridColumn TItem="BrukerRespons" Property="nyId" Title="NyID" Width="80px" />
             <RadzenGridColumn  TItem="BrukerRespons" Property="Fornavn" Title="Fornavn" Width="100px" />
             <RadzenGridColumn TItem="BrukerRespons" Property="Mellomnavn" Title="Mellomnavn" Width="100px" />
             <RadzenGridColumn  TItem="BrukerRespons" Property="Etternavn" Title="Etternavn" Width="100px" />
@@ -312,7 +313,7 @@ else
                         await writer.WriteLineAsync("id,fornavn,etternavn,tlf,brukernavn,passord,epost");
                         foreach (var bruker in BrukerRes)
                         {
-                            string linje = $"{bruker.Id},{bruker.Fornavn},{bruker.Mellomnavn},{bruker.Etternavn},{bruker.Tlf},{bruker.Brukernavn},{bruker.Passord},{bruker.Epost}";
+                            string linje = $"{bruker.Id},{bruker.nyid},{bruker.Fornavn},{bruker.Mellomnavn},{bruker.Etternavn},{bruker.Tlf},{bruker.Brukernavn},{bruker.Passord},{bruker.Epost}";
                             await writer.WriteLineAsync(linje);
                         }
                     }
@@ -328,7 +329,7 @@ else
                         foreach (var ansatt in BrukerRes)
                         {
 
-                            string linje = $"{ansatt.Id},{ansatt.Fornavn},{ansatt.Mellomnavn},{ansatt.Etternavn},{ansatt.Tlf},{ansatt.Brukernavn},{ansatt.Passord},{ansatt.Epost}";
+                            string linje = $"{ansatt.Id},{ansatt.nyid},{ansatt.Fornavn},{ansatt.Mellomnavn},{ansatt.Etternavn},{ansatt.Tlf},{ansatt.Brukernavn},{ansatt.Passord},{ansatt.Epost}";
                             await writer.WriteLineAsync(linje);
                         }
                     }
