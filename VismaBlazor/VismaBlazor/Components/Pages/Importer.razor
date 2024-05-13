@@ -78,11 +78,12 @@ Dataen skal så vises i resultat page som åpnes etter importen er ferdig.
 
 @if (BrukerRes != null && BrukerRes.Any())
 {
-    
+<div class="pb-4">
     <RadzenGrid id="grid" TItem="BrukerRespons" Data="@BrukerRes"
-                AllowPaging="true" AllowSorting="true" AllowFiltering="true">
+                AllowPaging="true" AllowSorting="true">
         <Columns>
-            <RadzenGridColumn  TItem="BrukerRespons" Property="Id" Title="ID" Width="80px" Filterable="true" />
+            <RadzenGridColumn  TItem="BrukerRespons" Property="Id" Title="ID" Width="80px" />
+            <RadzenGridColumn TItem="BrukerRespons" Property="NyId" Title="NyID" Width="80px" />
             <RadzenGridColumn  TItem="BrukerRespons" Property="Fornavn" Title="Fornavn" Width="100px" />
             <RadzenGridColumn TItem="BrukerRespons" Property="Mellomnavn" Title="Mellomnavn" Width="100px" />
             <RadzenGridColumn  TItem="BrukerRespons" Property="Etternavn" Title="Etternavn" Width="100px" />
@@ -98,7 +99,7 @@ Dataen skal så vises i resultat page som åpnes etter importen er ferdig.
         <RadzenButton id="Csvfil" Variant="Variant.Flat" Shade="Shade.Dark" Click=@(args => (Eksporter("csv"))) Text="CSV" ButtonStyle="ButtonStyle.Success" />
         <RadzenButton id="Txtfil" Variant="Variant.Flat" Shade="Shade.Dark" Click=@(args => (Eksporter("txt"))) Text="TXT" ButtonStyle="ButtonStyle.Success" />
   </RadzenStack>
-   
+   </div>
 } 
 else
 {
@@ -309,10 +310,10 @@ else
                 {
                     using (StreamWriter writer = new StreamWriter(fileName))
                     {
-                        await writer.WriteLineAsync("id,fornavn,etternavn,tlf,brukernavn,passord,epost");
+                        await writer.WriteLineAsync("id,nyid,fornavn,mellomnavn,etternavn,tlf,brukernavn,passord,epost");
                         foreach (var bruker in BrukerRes)
                         {
-                            string linje = $"{bruker.Id},{bruker.Fornavn},{bruker.Mellomnavn},{bruker.Etternavn},{bruker.Tlf},{bruker.Brukernavn},{bruker.Passord},{bruker.Epost}";
+                            string linje = $"{bruker.Id},{bruker.NyId},{bruker.Fornavn},{bruker.Mellomnavn},{bruker.Etternavn},{bruker.Tlf},{bruker.Brukernavn},{bruker.Passord},{bruker.Epost}";
                             await writer.WriteLineAsync(linje);
                         }
                     }
@@ -324,11 +325,11 @@ else
                 {
                     using (StreamWriter writer = new StreamWriter(fileName))
                     {
-                        await writer.WriteLineAsync("id,fornavn,etternavn,tlf,brukernavn,passord,epost");
+                        await writer.WriteLineAsync("id,nyid,fornavn,mellomnavn,etternavn,tlf,brukernavn,passord,epost");
                         foreach (var ansatt in BrukerRes)
                         {
 
-                            string linje = $"{ansatt.Id},{ansatt.Fornavn},{ansatt.Mellomnavn},{ansatt.Etternavn},{ansatt.Tlf},{ansatt.Brukernavn},{ansatt.Passord},{ansatt.Epost}";
+                            string linje = $"{ansatt.Id},{ansatt.NyId},{ansatt.Fornavn},{ansatt.Mellomnavn},{ansatt.Etternavn},{ansatt.Tlf},{ansatt.Brukernavn},{ansatt.Passord},{ansatt.Epost}";
                             await writer.WriteLineAsync(linje);
                         }
                     }

@@ -4,7 +4,7 @@ namespace VismaBlazor.Models
 {
     public class BrukerRespons
     {
-
+        public string NyId { get; set; } = string.Empty;
         public string Fornavn { get; set; } = string.Empty;
         public string Mellomnavn { get; set; } = string.Empty;
         public string Etternavn { get; set; } = string.Empty;
