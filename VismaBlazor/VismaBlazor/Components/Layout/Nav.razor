@@ -12,11 +12,9 @@
         </RadzenStack>
     </RadzenHeader>
 
-
     <RadzenSidebar Responsive="false" Style="width: max-content">
         <RadzenPanelMenu DisplayStyle="@(sidebarExpanded ? MenuItemDisplayStyle.IconAndText : MenuItemDisplayStyle.Icon)" ShowArrow="false">
-           
-      
+         
             @if (user != string.Empty)
             {
                 <RadzenPanel>@user</RadzenPanel>
@@ -25,7 +23,6 @@
             {
                 <RadzenPanel> Ikke pålogget</RadzenPanel>
             }
-
             <RadzenPanelMenuItem Text="Hjem" Icon="home" Path="" />
             <RadzenPanelMenuItem Text="Import" Icon="file_upload" Path="Importer" />
             <RadzenPanelMenuItem Text="Generator" Icon="create" Path="Generator" />
@@ -39,18 +36,14 @@
             
         </div>
     </RadzenBody>
-
-
-
 </RadzenLayout>
 
 <div>
 <RadzenFooter class="rz-text-align-center shadow-lg">
-
     <RadzenText TextStyle="TextStyle.Overline" class="p-2">Datagenerator ┃ Gruppe 5 ┃ @@2024 </RadzenText>
-
-    </RadzenFooter>
+</RadzenFooter>
 </div>
+
 @code {
     bool sidebarExpanded = true;
 
@@ -59,9 +52,6 @@
     [CascadingParameter]
 
     private Task<AuthenticationState>? authenticationState { get; set; }
-
-    
-
 
     protected override async void OnInitialized()
     {
@@ -72,14 +62,11 @@
             user = state.User.Identity?.Name ?? "";
 
         }
-
         await base.OnInitializedAsync();
-
-
     }
+        /*KILDER
+         * 
+        https://blazor.radzen.com/layout for Sidebar
 
-
-
-
-
+         */
 }

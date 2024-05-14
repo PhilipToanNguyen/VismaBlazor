@@ -1,5 +1,6 @@
 ﻿@page "/Resultat"
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.JSInterop
 @using Models
 @using System.Text.Json
 @using System.Text
@@ -12,8 +13,6 @@
 @attribute [StreamRendering]
 @attribute [Authorize]
 
-
-
 <PageTitle>Resultat</PageTitle>
 
 <h1>Resultat</h1>
@@ -21,10 +20,7 @@
 @if (BrukerRes == null)
 {
     <p><em>Loading...</em></p>
-  
 }
-
-
 
 @if (BrukerRes != null && BrukerRes.Any())
 {
@@ -43,7 +39,6 @@
             <RadzenGridColumn TItem="BrukerRespons" Property="Epost" Title="E-post" Width="200px" Filterable="true" />
         </Columns>
     </RadzenGrid>
-
    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="10" Wrap="FlexWrap.Wrap" class="pt-4">
         <RadzenButton id="Jsonfil2" Variant="Variant.Flat" Shade="Shade.Dark" Click=@(args => (EksporterJson())) Text="JSON" ButtonStyle="ButtonStyle.Success" />
         <RadzenButton id="Csvfil2" Variant="Variant.Flat" Shade="Shade.Dark" Click=@(args => (Eksporter("csv"))) Text="CSV" ButtonStyle="ButtonStyle.Success" />
@@ -58,20 +53,15 @@ else
     </RadzenAlert>
 }
 
-
 @code {
-
     private List<BrukerRespons>? BrukerRes;
 
     protected override async Task OnInitializedAsync()
     {
-
-
         BrukerRes = HttpClientPost.HentBrukerResponse();
     }
 
-
-    public async Task JsRuntimeMethod(string type, string convert)
+    public async Task JsRuntimeMetode(string type, string convert)
     {
         if (JSRuntime != null)
         {
@@ -84,8 +74,8 @@ else
         }
     }
 
-        [Inject]
-        public IJSRuntime JSRuntime { get; set; }
+    [Inject]
+    public IJSRuntime JSRuntime { get; set; }
 
     public async Task EksporterJson()
     {
@@ -93,20 +83,18 @@ else
         {
             if (BrukerRes != null && BrukerRes.Any())
             {
-                // Opprett en liste med anonyme objekter basert på ansatte-data
+                // Oppretter liste med anonyme objekter basert på ansatte-data
                 var jsonData = BrukerRes;
-
                 // Serialisere listen til JSON
                 var jsonString = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
-
-                await JsRuntimeMethod("data.json", jsonString);
+                await JsRuntimeMetode("data.json", jsonString);
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Feil ved eksportering til JSON: {ex.Message}");
         }
-    }
+    } 
 
     public async Task Eksporter(string fileExtension)
     {
@@ -115,11 +103,9 @@ else
             if (BrukerRes != null && BrukerRes.Any())
             {
                 string fileName = $"data.{fileExtension}";
-
                 // Eksporter til CSV-fil
                 if (fileExtension.ToLower() == "csv")
                 {
-
                     using (StreamWriter writer = new StreamWriter(fileName))
                     {
                         await writer.WriteLineAsync("id,nyid,fornavn,mellomnavn,etternavn,tlf,brukernavn,passord,epost");
@@ -128,17 +114,13 @@ else
                             string linje = $"{bruker.Id},{bruker.NyId},{bruker.Fornavn},{bruker.Mellomnavn},{bruker.Etternavn},{bruker.Tlf},{bruker.Brukernavn},{bruker.Passord},{bruker.Epost}";
                             await writer.WriteLineAsync(linje);
                         }
-
                     }
                     string fileContent = await File.ReadAllTextAsync(fileName);
-
-                    await JsRuntimeMethod(fileName, fileContent);
-
+                    await JsRuntimeMetode(fileName, fileContent);
                 }
                 // Eksporter til TXT-fil
                 else if (fileExtension.ToLower() == "txt")
                 {
-
                     using (StreamWriter writer = new StreamWriter(fileName))
                     {
                         await writer.WriteLineAsync("id,nyid,fornavn,mellomnavn,etternavn,tlf,brukernavn,passord,epost");
@@ -151,10 +133,8 @@ else
                     }
                     string fileContent = await File.ReadAllTextAsync(fileName);
 
-                    await JsRuntimeMethod(fileName, fileContent);
-
+                    await JsRuntimeMetode(fileName, fileContent);
                 }
-
                 Console.WriteLine($"Eksportert til {fileExtension.ToUpper()}.");
             }
             else
@@ -167,7 +147,4 @@ else
             Console.WriteLine($"Feil ved eksportering: {ex.Message}");
         }
     }
-
-
-
 }
