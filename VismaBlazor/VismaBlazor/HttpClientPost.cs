@@ -53,9 +53,7 @@ namespace VismaBlazor
                 }
                 }
             }
-
         }
-
         public async Task PostFlereId(string flereIds, string domene) 
         {
             var token = await HentAuth();
@@ -87,8 +85,6 @@ namespace VismaBlazor
                         Console.WriteLine(res.StatusCode);
 
                     }
-
-
                 else
                 {
                     Console.WriteLine("FAIL! flere ids");
@@ -97,10 +93,7 @@ namespace VismaBlazor
 
             }
             }
-
         }
-
-        
         public async Task<string> HentAuth()
         {
             using (var client = new HttpClient())

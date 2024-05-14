@@ -23,14 +23,11 @@
                     <div class=" pe-4">
                         <RadzenButton id="FaneKnappManuelt" class="bg-danger" Click="@vismanuell"> Skriv inn liste med ID </RadzenButton>
                     </div>
-                     
                     <div class=" ps-4">
                         <RadzenButton id="FaneKnappID" class="bg-danger" Click="@visantid"> Autogenerer antall ID </RadzenButton>
                     </div>
                 </div>
-
             @if (vismanuellgen == true) {
-
                 <div class="px-4">
                     <RadzenAlert Title="Skriv inn NøkkelID manuelt"
                         AlertStyle="AlertStyle.Info"
@@ -40,8 +37,6 @@
                         F.eks: 1,2,3,4 eller 3,8,16,3,1
                     </RadzenAlert>
                 </div>
-               
-              
                 <div class="p-4">        
                            <textarea 
                                id="generatormanuelt"
@@ -51,7 +46,6 @@
                                style="resize:none" 
                                placeholder=" F.eks: 1,3,6,20,11"   />    
                 </div>
-
                 <div class="px-4" >
                         <RadzenAlert Title="Skriv inn domene for mail"          
                             AlertStyle="AlertStyle.Info" 
@@ -59,7 +53,6 @@
                             Shade="Shade.Lighter"
                             AllowClose=false />
                 </div>
-                 
                 <div> 
                     <RadzenTextBox id="generatordomainManuelt" 
                         Value="@domain" 
@@ -67,15 +60,12 @@
                         Placeholder="F.eks: Generator.com" 
                         style="width: 200px" />
                 </div>
-
                 <div class="col-md-12 p-2 text-center">                      
                     <RadzenButton id="genererKnapp" Text="Generer" ButtonStyle="ButtonStyle.Success" Click="@SendIdManuell" style="width: 25%" />
                 </div>
               } 
-
                 @if (visantidgen == true)
                 {
-                   
                     <div>
                         <RadzenAlert Title="Skriv inn antall ID som skal genereres"
                             AlertStyle="AlertStyle.Info"
@@ -85,11 +75,9 @@
                             F.eks: 10
                         </RadzenAlert>
                     </div>
-
                     <div class="col-md-12 p-2" id="generatorantalldiv">
                         <RadzenNumeric id="generatorantall" TValue="int" Value="@ids" Change=@(args => ids = args) Placeholder="F.eks: 10" style="width: 200px" />
                     </div>
-
                     <div>
                         <RadzenAlert Title="Skriv inn domene for mail"
                             AlertStyle="AlertStyle.Info"
@@ -97,8 +85,6 @@
                             Shade="Shade.Lighter"
                             AllowClose=false />
                     </div>
-
-
                     <div>
                         <RadzenTextBox id="generatordomainID"
                                    Value="@domain2"
@@ -106,24 +92,18 @@
                                    Placeholder="F.eks: Generator.com"
                                    style="width: 200px" />
                 </div>
-
                 <div class="col-md-12 p-2 text-center">                      
                     <RadzenButton id="genererKnappID" Text="Generer" ButtonStyle="ButtonStyle.Success" Click="@SendIdAuto" style="width: 25%" />
                 </div>
                 }
-
             </div>
          </div>
-                
     </RadzenCard>
 </div>
-
-
 @if (load == true)
 {
     <RadzenAlert Text="Laster inn data" Severity="Severity.Info" AlertStyle="AlertStyle.Info" />
 }
-
 @if (error == true)
 {
     <RadzenAlert Text="Vennligst skriv i ett av feltene" Severity="Severity.Warning" AlertStyle="AlertStyle.Danger" AllowClose="false" />
@@ -139,19 +119,15 @@
     private Boolean vismanuellgen { get; set; }
     private Boolean? error { get; set; }
     private Boolean load { get; set; }
-    
 
     void OnChange(string value)
     {
         ids = int.Parse(value);
-
     }
 
     protected override async Task OnInitializedAsync()
     {
-        
       vismanuellgen = true;
-        
     }
 
     private void visantid() {
@@ -163,23 +139,17 @@
     private void vismanuell() {
         vismanuellgen = true;
         visantidgen = false;
-
     }
 
     public IdList[]? idobject;
 
     public async Task SendIdManuell()
     {
-
         if (domain != null && flereids != null)
         {
             load = true;
-
-            
-            
             await HttpClientPost.PostFlereId(flereids, domain);
             NavigationManager.NavigateTo("/Resultat");
-            
         }
         else {
             error = true;
@@ -188,14 +158,9 @@
 
     public async Task SendIdAuto()
     {
-
-       
         if (domain2 != null && ids != 0)
         {
             load = true;
-
-                
-
             await HttpClientPost.Post(ids, domain2);
             NavigationManager.NavigateTo("/Resultat");
         }
@@ -203,8 +168,6 @@
         {
             error = true;
         }
-
     }
-
     }
 
