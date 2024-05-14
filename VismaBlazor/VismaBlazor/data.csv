@@ -1,5 +1,3 @@
-id,fornavn,etternavn,tlf,brukernavn,passord,epost
-29DV980,Rik,Elv,Kiwi,35650035,RiKi29DV980,Kirsebær21,RiKi29DV980@BONUS.NO
-BX11501,Vanlig,Blåbær,Storm,84869921,VaStBX11501,Røyk63,VaStBX11501@BONUS.NO
-675T3J9,Tålmodig,,Kråke,14550739,TåKr675T3J9,Dompap4,TåKr675T3J9@BONUS.NO
-4090ON0,Selvbevisst-Grønn,,Safran,27603894,SeSa4090ON0,Oregano91,SeSa4090ON0@BONUS.NO
+id,nyid,fornavn,mellomnavn,etternavn,tlf,brukernavn,passord,epost
+1,1,Upålitelig,,Hai,23057351,UpHa1,Låvesvale5,UpHa1@s
+2,2,Kjedelig-Sunn,,Kondor,60322104,KjKo2,Pistasjnøtt87,KjKo2@s
