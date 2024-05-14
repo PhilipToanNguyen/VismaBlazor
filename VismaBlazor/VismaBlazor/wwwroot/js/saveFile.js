@@ -1,13 +1,13 @@
-﻿window.saveAsFile = (filNavn, innhold) => {
-    const blobObjekt = new Blob([innhold], { type: 'application/json, text/csv, text/plain' }); //Oppretter konstant variabel
-    const url = URL.createObjectURL(blobObjekt); //url genereres, brukes for å referere til dataer
+﻿window.saveAsFile = (fileName, content) => {
+    const blob = new Blob([content], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
 
-    const link = document.createElement('a'); //oppretter link element som tar initiativ til nedlastning
-    link.href = url;
-    link.download = filNavn;
-    document.body.appendChild(link); //linken blir lagt til kroppen
-    link.click(); //ved klikk startes nedlastning
-    document.body.removeChild(link); //etter klikk, så vil linken løse fra seg
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 
-    URL.revokeObjectURL(url); //for å holde nettleseren effektiv bruker vi denne for å frigjøre minne
+    URL.revokeObjectURL(url);
 };
