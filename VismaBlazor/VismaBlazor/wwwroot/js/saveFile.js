@@ -1,13 +1,14 @@
-﻿window.saveAsFile = (fileName, content) => {
-    const blob = new Blob([content], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
+﻿window.saveAsFile = (filNavn, filInnhold) => {
 
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = fileName;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    var link = document.createElement('a'); //oppretter a-elemnt (html). link
+    link.download = filNavn; //setter download -> filnavn
+    link.href = blobUrl; //setter href -> bloburl
+    document.body.appendChild(link); //a-elementet blir lagt til i kroppen
+    link.click(); //nedlastning skjer ved klikk
+    document.body.removeChild(link); 
 
-    URL.revokeObjectURL(url);
 };
+
+//Kilder: https://wellsb.com/csharp/aspnet/blazor-jsinterop-save-file
+// Gir muligheten for å kunne eksportere.
+// Referert i App.razor
