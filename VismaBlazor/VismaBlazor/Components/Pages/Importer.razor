@@ -22,15 +22,6 @@
 
 <PageTitle>Importer fil</PageTitle>
 
-@*
-Skal inneholde en knapp for å laste opp filer, og en knapp for å starte importen
-Denne skal også sende filen til serveren og genere data fra filen.
-Dataen skal så vises i resultat page som åpnes etter importen er ferdig.
-*@
-
-
-
-
 <RadzenCard class="py-4 flex-column" Style="width: 100%">
     <RadzenAlert Title="Last opp en fil" AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" AllowClose=false>
         Velg en fil for å starte importen
@@ -49,286 +40,229 @@ Dataen skal så vises i resultat page som åpnes etter importen er ferdig.
                        style="width: 200px" />
     </div>
     <div id="oppLastning">
-        <RadzenButton id="oppLastningID" Text="Upload" Click=@(args => Opplastning(file)) class="d-block pt-2 mt-4 bg-success" />
+        <RadzenButton id="oppLastningID"
+                      Text="Upload"
+                      Click=@(args => Opplastning(fil))
+                      class="d-block pt-2 mt-4 bg-success" />
     </div>
-
 </RadzenCard>
 
-
-
-
-@if (errors.Count > 0)
-
-        @foreach (var error in errors)
-        {
-            <RadzenAlert AlertStyle="AlertStyle.Danger" ShowIcon="false" Variant="Variant.Flat" Shade="Shade.Lighter">
-                Alert without message icon
-            </RadzenAlert>
-        
-        
-        
-}
-
+@if (feilError.Count > 0)
+    @foreach (var feil in feilError)
+    {
+        <RadzenAlert AlertStyle="AlertStyle.Danger" ShowIcon="false" Variant="Variant.Flat" Shade="Shade.Lighter">
+            Her er det noe som har skjedd!
+        </RadzenAlert>
+    }
 
 @if (BrukerRes != null && BrukerRes.Any())
 {
-    
-<div class="pb-4">
-    <RadzenGrid id="grid" TItem="BrukerRespons" Data="@BrukerRes" AllowPaging="true" AllowSorting="true">
-        <Columns>
-            <RadzenGridColumn  TItem="BrukerRespons" Property="Id" Title="ID" Width="80px" />
-            <RadzenGridColumn TItem="BrukerRespons" Property="NyId" Title="NyID" Width="80px" />
-            <RadzenGridColumn  TItem="BrukerRespons" Property="Fornavn" Title="Fornavn" Width="100px" />
-            <RadzenGridColumn TItem="BrukerRespons" Property="Mellomnavn" Title="Mellomnavn" Width="100px" />
-            <RadzenGridColumn  TItem="BrukerRespons" Property="Etternavn" Title="Etternavn" Width="100px" />
-            <RadzenGridColumn  TItem="BrukerRespons" Property="Tlf" Title="Telefon" Width="100px" />
-            <RadzenGridColumn  TItem="BrukerRespons" Property="Brukernavn" Title="Brukernavn" Width="120px" />
-            <RadzenGridColumn  TItem="BrukerRespons" Property="Passord" Title="Passord" Width="120px" />
-            <RadzenGridColumn  TItem="BrukerRespons" Property="Epost" Title="E-post" Width="120px" />
-        </Columns>
-    </RadzenGrid>
-   <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="10" Wrap="FlexWrap.Wrap" class="pt-4">
-        <RadzenButton id="Jsonfil" Variant="Variant.Flat" Shade="Shade.Dark" Click=@(args => (EksporterJson())) Text="JSON" ButtonStyle="ButtonStyle.Success" />
-        <RadzenButton id="Csvfil" Variant="Variant.Flat" Shade="Shade.Dark" Click=@(args => (Eksporter("csv"))) Text="CSV" ButtonStyle="ButtonStyle.Success" />
-        <RadzenButton id="Txtfil" Variant="Variant.Flat" Shade="Shade.Dark" Click=@(args => (Eksporter("txt"))) Text="TXT" ButtonStyle="ButtonStyle.Success" />
-    private List<string> feil = new List<string>();
-    public IBrowserFile? fil;
-    private IWebDriver driver;
 
-    // Inject IJSRuntime
+    <div class="pb-4">
+        <RadzenGrid id="grid" TItem="BrukerRespons" Data="@BrukerRes" AllowPaging="true" AllowSorting="true">
+            <Columns>
+                <RadzenGridColumn TItem="BrukerRespons" Property="Id" Title="ID" Width="80px" />
+                <RadzenGridColumn TItem="BrukerRespons" Property="NyId" Title="NyID" Width="80px" />
+                <RadzenGridColumn TItem="BrukerRespons" Property="Fornavn" Title="Fornavn" Width="100px" />
+                <RadzenGridColumn TItem="BrukerRespons" Property="Mellomnavn" Title="Mellomnavn" Width="100px" />
+                <RadzenGridColumn TItem="BrukerRespons" Property="Etternavn" Title="Etternavn" Width="100px" />
+                <RadzenGridColumn TItem="BrukerRespons" Property="Tlf" Title="Telefon" Width="100px" />
+                <RadzenGridColumn TItem="BrukerRespons" Property="Brukernavn" Title="Brukernavn" Width="120px" />
+                <RadzenGridColumn TItem="BrukerRespons" Property="Passord" Title="Passord" Width="120px" />
+                <RadzenGridColumn TItem="BrukerRespons" Property="Epost" Title="E-post" Width="120px" />
+            </Columns>
+        </RadzenGrid>
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="10" Wrap="FlexWrap.Wrap" class="pt-4">
+            <RadzenButton id="Jsonfil" Variant="Variant.Flat" Shade="Shade.Dark" Click=@(args => (EksporterJson())) Text="JSON" ButtonStyle="ButtonStyle.Success" />
+            <RadzenButton id="Csvfil" Variant="Variant.Flat" Shade="Shade.Dark" Click=@(args => (Eksporter("csv"))) Text="CSV" ButtonStyle="ButtonStyle.Success" />
+            <RadzenButton id="Txtfil" Variant="Variant.Flat" Shade="Shade.Dark" Click=@(args => (Eksporter("txt"))) Text="TXT" ButtonStyle="ButtonStyle.Success" />
+        </RadzenStack>
+    </div>
+}
+else
+{
     <RadzenAlert Title="Ingen data å vise." style="width: 100%" AlertStyle="AlertStyle.Warning" Variant="Variant.Flat" Shade="Shade.Lighter" AllowClose=false>
         Last opp en fil (TXT, CSV eller JSON)
-    public long maxFileSize = 1024 * 1024 * 3;  // 3MB  List<Ansatte> ansatteListe = new List<Ansatte>();
-    private List<string> errors = new List<string>();
-    public IBrowserFile? file;
-    public Random random = new Random();
-    private IWebDriver driver;
-
-    //Radzen
-    HorizontalAlign pagerHorizontalAlign = HorizontalAlign.Justify;
-    PagerPosition pagerPosition = PagerPosition.Bottom;
+    </RadzenAlert>
+}
 
 
 @code
 {
-
     public string? domain { get; set; }
     public List<BrukerRespons>? BrukerRes;
-    public long maxFileSize = 1024 * 1024 * 3;  // 3MB  List<Ansatte> ansatteListe = new List<Ansatte>();
-    private List<string> errors = new List<string>();
-    public IBrowserFile? file;
-    public Random random = new Random();
-    private IWebDriver driver;
-
-    //Radzen
-    HorizontalAlign pagerHorizontalAlign = HorizontalAlign.Justify;
-    PagerPosition pagerPosition = PagerPosition.Bottom;
+    private List<string> feilError = new List<string>();
+    public IBrowserFile? fil;
 
 
     // Inject IJSRuntime
     [Inject]
     public IJSRuntime JSRuntime { get; set; }
 
-
-
     //1
-        Console.WriteLine($"Filen '{fil.Name}' laster opp..");
-
+    public async Task lastOppFil(InputFileChangeEventArgs e)
+    {
         try
         {
             if (e.File != null)
             {
-                file = e.File;
-                Console.WriteLine($"Filen '{file.Name}' ble valgt.");
+                fil = e.File;
+                Console.WriteLine($"Filen '{fil.Name}' ble valgt.");
             }
             else
             {
                 Console.WriteLine("Ingen fil ble valgt.");
-                    if (forsteLinje)
+            }
         }
-                        forsteLinje = false;
-
+        catch (Exception ex)
+        {
             Console.WriteLine($"Feil ved lasting av fil: {ex.Message}");
-                    allIds.AddRange(linje.Split(',').Where(id => !string.IsNullOrWhiteSpace(id)));
+            throw; // Kaster unntaket videre
         }
     }
 
-    public async Task<List<BrukerRespons>> Files(IBrowserFile file)
+    public async Task<List<BrukerRespons>> Filer(IBrowserFile fil)
     {
-        if (file is null)
+        if (fil is null)
         {
             return new List<BrukerRespons>();
-                    if (isFirstLine)
+        }
         List<BrukerRespons> idListe = new List<BrukerRespons>();
-        Console.WriteLine($"Filen '{file.Name}' laster opp..");
-
+        Console.WriteLine($"Filen {fil.Name} laster opp"); //Sjekk ved testing
         try
         {
-            using (var stream = file.OpenReadStream())
-            using (var reader = new StreamReader(stream))
+            using (var stream = fil.OpenReadStream())
+            using (var leser = new StreamReader(stream))
             {
-                var allIds = new List<string>();
-                string line;
-                bool isFirstLine = true;
-                while ((line = await reader.ReadLineAsync()) != null)
+                var alleID = new List<string>();
+                string linje;
+                bool startLinje = true;
+                while ((linje = await leser.ReadLineAsync()) != null)
                 {
-                    if (isFirstLine)
+                    if (startLinje)
                     {
-                        isFirstLine = false;
+                        startLinje = false;
                         continue;
                     }
-                    allIds.AddRange(line.Split(',').Where(id => !string.IsNullOrWhiteSpace(id)));
+                    alleID.AddRange(linje.Split(',').Where(id => !string.IsNullOrWhiteSpace(id)));
                 }
                 if (alleID.Count > 0)
                 {
-
-    public async Task<List<BrukerRespons>> FilesJson(IBrowserFile fil)
+                    try
                     {
-        if (this.fil == null)
+                        // Konverter listen til komma sepparert
                         var idsString = string.Join(",", alleID);
 
                         // ikke for hver linje, men alle på en
                         await HttpClientPost.PostFlereId(idsString, domain);
 
-        Console.WriteLine($"Laster opp filen '{this.fil.Name}'...");
+                        // Anta at HentBrukerResponse er en metode for å hente lagrede svar
                         if (HttpClientPost.HentBrukerResponse() != null)
-            errors.Add($"Feil ved innlesing av fil: {file.Name}. Feilmelding: {ex.Message}");
-            using (var stream = this.fil.OpenReadStream())
-            using (var reader = new StreamReader(stream))
+                        {
+                            idListe.AddRange(HttpClientPost.HentBrukerResponse());
+                        }
                         Console.WriteLine("Brukerdata for alle IDer lagt til."); //Sjekk ved testing
-    public async Task<List<BrukerRespons>> FilesJson(IBrowserFile file)
+                    }
                     catch (Exception ex)
-        if (file == null)
-
-                var gyldigId = new List<string>();
-
-                foreach (var bruker in brukerListe)
-                {
-                    gyldigId.Add(bruker.Id);
-                }
-
-                
-                
-                
-                if (gyldigId.Any() && this.fil != null)
+                    {
+                        Console.WriteLine($"Feil ved henting av brukerdata: {ex.Message}");//Sjekk ved testing
+                    }
                 }
             }
         }
-        Console.WriteLine($"Laster opp filen '{file.Name}'...");
+        catch (Exception ex)
         {
-            errors.Add($"Feil ved innlesing av fil: {file.Name}. Feilmelding: {ex.Message}");
+            feilError.Add($"Feil ved innlesing av fil: {fil.Name}. Feilmelding: {ex.Message}");
         }
         return idListe;
     }
-    public async Task<List<BrukerRespons>> FilesJson(IBrowserFile file)
-    public async Task<List<BrukerRespons>> FilesJson(IBrowserFile fil)
-        if (file == null)
+
+    public async Task<List<BrukerRespons>> FilerJson(IBrowserFile fil)
+    {
+        if (fil == null)
         {
-            Console.WriteLine("Ingen fil valgt.");
-            Console.WriteLine("Ingen fil valgt.");
             Console.WriteLine("Ingen fil valgt.");
             return new List<BrukerRespons>();
         }
         List<BrukerRespons> gyldigeBrukere = new List<BrukerRespons>();
-        Console.WriteLine($"Laster opp filen '{file.Name}'...");
+        Console.WriteLine($"Laster opp filen '{fil.Name}'...");
         try
         {
-            using (var stream = file.OpenReadStream())
-                string jsonContent = await reader.ReadToEndAsync();
+            using (var stream = fil.OpenReadStream())
+            using (var leser = new StreamReader(stream))
+            {
+                string jsonContent = await leser.ReadToEndAsync();
                 List<BrukerRespons> brukerListe = JsonConvert.DeserializeObject<List<BrukerRespons>>(jsonContent);
                 // Samler gyldige IDer
                 var gyldigId = brukerListe.Where(b => int.TryParse(b.Id, out _)).Select(b => b.Id).ToList();
-                if (gyldigId.Any() && file != null)
-                var gyldigId = new List<string>();
-
-                foreach (var bruker in brukerListe)
-                {
-                    gyldigId.Add(bruker.Id);
-                }
-                    Console.WriteLine($"IDer sendt til API: {idString}");
-                }
-                
-                
-                if (gyldigId.Any() && this.fil != null)
-                var gyldigId = new List<string>();
-
-                foreach (var bruker in brukerListe)
-                {
-                    gyldigId.Add(bruker.Id);
-                }
-                            Console.WriteLine($"IDer sendt til API: {idString}");
-                }
-                
-                
-                if (gyldigId.Any() && this.fil != null)
+                if (gyldigId.Any() && fil != null)
                 {
                     //komma-separert streng
                     string idString = String.Join(",", gyldigId);
-    //3
-    //Sjekker om filen samsvarer med riktige typer-filer
-    public async Task Opplastning(IBrowserFile file)
-                    await HttpClientPost.PostFlereId(idString, domain);
-                            Console.WriteLine($"IDer sendt til API: {idString}");
+                    if (domain != null)
+                    {
+                        // Post IDs til api
+                        await HttpClientPost.PostFlereId(idString, domain);
+                        Console.WriteLine($"IDer sendt til API: {idString}");
+                    }
+                    // metode for å hente responsen
+                    gyldigeBrukere = HttpClientPost.HentBrukerResponse();
                 }
-            if (file != null)
-
-    //3
-                    BrukerRes = await FilesJson(fil);
-                    Console.WriteLine($"Filen '{fil.Name}' er ferdig lastet opp.");
+            }
         }
-    //3 //Sjekker om filen samsvarer med riktige typer-filer
-    public async Task Opplastning(IBrowserFile fil)
-                    feil.Add("Det må være en JSON-, CSV eller TXT-fil.");
+        catch (JsonException e)
+        {
+            Console.WriteLine($"Feil ved parsing av JSON: {e.Message}");
         }
         catch (Exception e)
-            if (fil != null)
+        {
             Console.WriteLine($"Generisk feil: {e.Message}");
-                    BrukerRes = await Files(file);
-                    Console.WriteLine($"Filen '{file.Name}' er ferdig lastet opp");
-                    errors.Add("Det må være en JSON-, CSV eller TXT-fil.");
-
-    //3 //Sjekker om filen samsvarer med riktige typer-filer
+        }
+        return gyldigeBrukere;
+    }
+    //3
+    //Sjekker om filen samsvarer med riktige typer-filer
     public async Task Opplastning(IBrowserFile fil)
-            else if (file == null)
-            {
-                Console.WriteLine("Kan ikke importere fordi ingen vil er valgt");
+    {
+        try
+        {
             if (fil != null)
             {
-            {
-                Console.WriteLine("Feil");
-                    feil.Add("Det må være en JSON-, CSV eller TXT-fil.");
-                    BrukerRes = await Files(file);
-                    Console.WriteLine($"Filen '{file.Name}' er ferdig lastet opp");
+                var fileExtension = Path.GetExtension(fil.Name)?.ToLower();
+                if (fileExtension == ".txt" || fileExtension == ".csv")
+                {
+                    BrukerRes = await Filer(fil);
+                    Console.WriteLine($"Filen '{fil.Name}' er ferdig lastet opp");
                 }
-            errors.Add($"Error: {ex.Message}");
-            {
-                Console.WriteLine("Kan ikke importere fordi ingen vil er valgt");
-                    Console.WriteLine($"Filen '{file.Name}' er ferdig lastet opp.");
+                else if (fileExtension == ".json")
+                {
+                    BrukerRes = await FilerJson(fil);
+                    Console.WriteLine($"Filen '{fil.Name}' er ferdig lastet opp.");
                 }
-            {
-                Console.WriteLine("123123");
-                    feil.Add("Det må være en JSON-, CSV eller TXT-fil.");
+                else if (fileExtension != ".csv" || fileExtension != ".json" || fileExtension != ".txt")
+                {
+                    feilError.Add("Det må være en JSON-, CSV eller TXT-fil.");
                     Console.WriteLine("Det må være en JSON-, CSV eller TXT-fil.");
-            if (BrukerRes != null && BrukerRes.Any())
-            {
-                string fileName = $"data.{fileExtension}";
+                }
+            }
+            else if (fil == null)
             {
                 Console.WriteLine("Kan ikke importere fordi ingen vil er valgt");
             }
             else
             {
-                Console.WriteLine("123123");
+                Console.WriteLine("Throw: Resterende feil.");
             }
         }
-            if (BrukerRes != null && BrukerRes.Any())
-            {
-                string filNavn = $"data.{fileExtension}";
+        catch (Exception ex)
+        {
+            feilError.Add($"Error: {ex.Message}");
             throw;
         }
     }
 
-                            string linje = $"{bruker.Id},{bruker.NyId},{bruker.Fornavn},{bruker.Mellomnavn},{bruker.Etternavn},{bruker.Tlf},{bruker.Brukernavn},{bruker.Passord},{bruker.Epost}";
-                            await writer.WriteLineAsync(linje);
+    public async Task Eksporter(string fileExtension)
+    {
         try
         {
             if (BrukerRes != null && BrukerRes.Any())
@@ -337,106 +271,97 @@ Dataen skal så vises i resultat page som åpnes etter importen er ferdig.
                 // Eksporter til CSV-fil
                 if (fileExtension.ToLower() == "csv")
                 {
-                    using (StreamWriter writer = new StreamWriter(fileName))
+                    using (StreamWriter writer = new StreamWriter(filNavn, false, Encoding.UTF8))
                     {
-                            string linje = $"{ansatt.Id},{ansatt.NyId},{ansatt.Fornavn},{ansatt.Mellomnavn},{ansatt.Etternavn},{ansatt.Tlf},{ansatt.Brukernavn},{ansatt.Passord},{ansatt.Epost}";
-                            await writer.WriteLineAsync(linje);
+                        await writer.WriteLineAsync("id,nyid,fornavn,mellomnavn,etternavn,tlf,brukernavn,passord,epost");
+                        foreach (var bruker in BrukerRes)
+                        {
+                            string linjePerBruker = $"{bruker.Id},{bruker.NyId},{bruker.Fornavn},{bruker.Mellomnavn},{bruker.Etternavn},{bruker.Tlf},{bruker.Brukernavn},{bruker.Passord},{bruker.Epost}";
+                            await writer.WriteLineAsync(linjePerBruker);
                         }
                     }
-                    string fileContent = await File.ReadAllTextAsync(fileName);
-                    await JsRuntimeMethod(fileName, fileContent);
-                    }
-                    string fileContent = await File.ReadAllTextAsync(fileName);
-                    await JsRuntimeMethod(fileName, fileContent);
+                    string innhold = await File.ReadAllTextAsync(filNavn, Encoding.UTF8);
+                    await JsRuntimeMetode(filNavn, innhold);
                 }
                 // Eksporter til TXT-fil
-                            string linje = $"{ansatt.Id},{ansatt.NyId},{ansatt.Fornavn},{ansatt.Mellomnavn},{ansatt.Etternavn},{ansatt.Tlf},{ansatt.Brukernavn},{ansatt.Passord},{ansatt.Epost}";
-                            await writer.WriteLineAsync(linje);
+                else if (fileExtension.ToLower() == "txt")
+                {
+                    using (StreamWriter writer = new StreamWriter(filNavn, false, Encoding.UTF8))
+                    {
+                        await writer.WriteLineAsync("id,nyid,fornavn,mellomnavn,etternavn,tlf,brukernavn,passord,epost");
+                        foreach (var ansatt in BrukerRes)
+                        {
+                            string linjePerBruker = $"{ansatt.Id},{ansatt.NyId},{ansatt.Fornavn},{ansatt.Mellomnavn},{ansatt.Etternavn},{ansatt.Tlf},{ansatt.Brukernavn},{ansatt.Passord},{ansatt.Epost}";
+                            await writer.WriteLineAsync(linjePerBruker);
                         }
                     }
-                    string fileContent = await File.ReadAllTextAsync(filNavn);
-                    await JsRuntimeMethod(filNavn, fileContent);
-                // Serialisere listen til JSON
-                var jsonString = JsonConvert.SerializeObject(jsonData,Formatting.Indented);
-
-                await JsRuntimeMethod("data.json", jsonString);
-
-                            string linje = $"{ansatt.Id},{ansatt.NyId},{ansatt.Fornavn},{ansatt.Mellomnavn},{ansatt.Etternavn},{ansatt.Tlf},{ansatt.Brukernavn},{ansatt.Passord},{ansatt.Epost}";
-                            await writer.WriteLineAsync(linje);
-                        }
-                    }
-                    string fileContent = await File.ReadAllTextAsync(filNavn);
-                    await JsRuntimeMethod(filNavn, fileContent);
+                    string innhold = await File.ReadAllTextAsync(filNavn, Encoding.UTF8);
+                    await JsRuntimeMetode(filNavn, innhold);
                 }
-                // Serialisere listen til JSON
+                Console.WriteLine($"Eksportert til {fileExtension.ToUpper()}.");
+            }
+            else
+            {
+                Console.WriteLine($"Ingen data å eksportere.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Feil ved eksportering: {ex.Message}");
+        }
+    }
+
+    public async Task EksporterJson()
+    {
+        try
+        {
+            if (BrukerRes != null && BrukerRes.Any())
+            {
+                // Oppretter liste med anonyme objekter fra ansatte-data
+                var jsonData = BrukerRes;
+                // Serialiserer til json
                 var jsonString = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
-
-                await JsRuntimeMethod("data.json", jsonString);
-
+                await JsRuntimeMetode("data.json", jsonString);
                 Console.WriteLine(jsonString, jsonData);
             }
             else
             {
                 Console.WriteLine("Ingenting");
             }
-                // Serialisere listen til JSON
-                var jsonString = JsonConvert.SerializeObject(jsonData,Formatting.Indented);
-
-                await JsRuntimeMethod("data.json", jsonString);
         }
-    }
-
-    public async Task JsRuntimeMethod(string type, string convert)
-    {
-        if (JSRuntime != null)
-        {
-            await JSRuntime.InvokeVoidAsync("saveAsFile", type, convert);
-            Console.WriteLine($"Vellykket med eksporteringen! Antall ansatte: {BrukerRes.Count}.");
-
-                await JsRuntimeMethod("data.json", jsonString);
-        }
-    }
-
-    public async Task JsRuntimeMethod(string type, string konverter)
-    {
-        if (JSRuntime != null)
-        {
-            await JSRuntime.InvokeVoidAsync("saveAsFile", type, konverter);
-            Console.WriteLine($"Vellykket med eksporteringen! Antall ansatte: {BrukerRes.Count}.");
+        catch (Exception ex)
         {
             Console.WriteLine($"Feil ved eksportering til JSON: {ex.Message}");
         }
     }
 
-    public async Task JsRuntimeMethod(string type, string konverter)
+    //Lager metode, slik at jeg kan bare kalle på metoden i eksporter metodene
+    public async Task JsRuntimeMetode(string type, string konverter)
     {
         if (JSRuntime != null)
         {
             await JSRuntime.InvokeVoidAsync("saveAsFile", type, konverter);
             Console.WriteLine($"Vellykket med eksporteringen! Antall ansatte: {BrukerRes.Count}.");
         }
+        else
         {
             Console.WriteLine("JSRuntime er null. Kan ikke eksportere til JSON.");
         }
     }
 
+     /*KILDER
+
+     https://blazor.radzen.com/docs/guides/getting-started/use-component.html?tabs=constant = Radzen komponenter
+     https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.components.forms.ibrowserfile?view=aspnetcore-8.0 = IBrowserFile
+     https://www.newtonsoft.com/json = Serialisering og deserialisering av JSON
+     https://learn.microsoft.com/en-us/dotnet/api/microsoft.jsinterop.jsruntime?view=aspnetcore-8.0 = JSRuntime + InvokeVoidAsync
+     https://learn.microsoft.com/en-us/dotnet/api/system.io.stream?view=net-8.0 og https://learn.microsoft.com/en-us/dotnet/standard/io/ StreamWriter + StreamReader (Lignende pensum fra PRO1000)
+
+    */
+}
 
 
 
 
 
 
-
-     
-
-    
-
-    
-        }
-    
-
-
-
-
-
-   
