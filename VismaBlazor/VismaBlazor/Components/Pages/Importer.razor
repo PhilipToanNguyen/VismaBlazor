@@ -93,7 +93,6 @@ else
     private List<string> feilError = new List<string>();
     public IBrowserFile? fil;
 
-
     // Inject IJSRuntime
     [Inject]
     public IJSRuntime JSRuntime { get; set; }
@@ -270,13 +269,13 @@ else
                 // Eksporter til CSV-fil
                 if (fileExtension.ToLower() == "csv")
                 {
-                    using (StreamWriter writer = new StreamWriter(filNavn, false, Encoding.UTF8))
+                    using (StreamWriter skriver = new StreamWriter(filNavn, false, Encoding.UTF8))
                     {
-                        await writer.WriteLineAsync("id,nyid,fornavn,mellomnavn,etternavn,tlf,brukernavn,passord,epost");
+                        await skriver.WriteLineAsync("id,nyid,fornavn,mellomnavn,etternavn,tlf,brukernavn,passord,epost");//Pr linje = Bruker med opplysninger
                         foreach (var bruker in BrukerRes)
                         {
                             string linjePerBruker = $"{bruker.Id},{bruker.NyId},{bruker.Fornavn},{bruker.Mellomnavn},{bruker.Etternavn},{bruker.Tlf},{bruker.Brukernavn},{bruker.Passord},{bruker.Epost}";
-                            await writer.WriteLineAsync(linjePerBruker);
+                            await skriver.WriteLineAsync(linjePerBruker);
                         }
                     }
                     string innhold = await File.ReadAllTextAsync(filNavn, Encoding.UTF8);
@@ -285,13 +284,13 @@ else
                 // Eksporter til TXT-fil
                 else if (fileExtension.ToLower() == "txt")
                 {
-                    using (StreamWriter writer = new StreamWriter(filNavn, false, Encoding.UTF8))
+                    using (StreamWriter skriver = new StreamWriter(filNavn, false, Encoding.UTF8))
                     {
-                        await writer.WriteLineAsync("id,nyid,fornavn,mellomnavn,etternavn,tlf,brukernavn,passord,epost");
+                        await skriver.WriteLineAsync("id,nyid,fornavn,mellomnavn,etternavn,tlf,brukernavn,passord,epost"); //Pr linje = Bruker med opplysninger
                         foreach (var ansatt in BrukerRes)
                         {
                             string linjePerBruker = $"{ansatt.Id},{ansatt.NyId},{ansatt.Fornavn},{ansatt.Mellomnavn},{ansatt.Etternavn},{ansatt.Tlf},{ansatt.Brukernavn},{ansatt.Passord},{ansatt.Epost}";
-                            await writer.WriteLineAsync(linjePerBruker);
+                            await skriver.WriteLineAsync(linjePerBruker);
                         }
                     }
                     string innhold = await File.ReadAllTextAsync(filNavn, Encoding.UTF8);
@@ -349,7 +348,7 @@ else
     }
 
      /*KILDER
-
+      * 
      https://blazor.radzen.com/docs/guides/getting-started/use-component.html?tabs=constant = Radzen komponenter
      https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.components.forms.ibrowserfile?view=aspnetcore-8.0 = IBrowserFile
      https://www.newtonsoft.com/json = Serialisering og deserialisering av JSON
