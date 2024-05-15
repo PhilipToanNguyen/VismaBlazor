@@ -14,5 +14,12 @@ namespace VismaBlazor.Models
         public string Brukernavn { get; set; } = string.Empty;
         public string Passord { get; set; } = string.Empty;
 
+
     }
+
+    public class ErrorMelding
+    {
+        public string Melding { get; set; } = string.Empty;
+    }
+
 }
