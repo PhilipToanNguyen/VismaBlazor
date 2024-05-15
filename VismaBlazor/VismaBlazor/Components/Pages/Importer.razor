@@ -4,7 +4,6 @@
 @inject NavigationManager NavigationManager
 @using Microsoft.AspNetCore.Authorization
 @using Newtonsoft.Json
-@using OpenQA.Selenium
 @using Radzen
 @using Radzen.Blazor
 @using Microsoft.JSInterop;
@@ -17,7 +16,6 @@
 @using System.Linq
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @attribute [StreamRendering]
-
 
 <PageTitle>Importer fil</PageTitle>
 
@@ -46,7 +44,9 @@
     </div>
 </RadzenCard>
 
+
 @if (feilError.Count > 0)
+//Per Error. 
     @foreach (var feil in feilError)
     {
         <RadzenAlert AlertStyle="AlertStyle.Danger" ShowIcon="false" Variant="Variant.Flat" Shade="Shade.Lighter">
@@ -56,7 +56,7 @@
 
 @if (BrukerRes != null && BrukerRes.Any())
 {
-
+    //Dataer etter opplastning
     <div class="pb-4">
         <RadzenGrid id="grid" TItem="BrukerRespons" Data="@BrukerRes" AllowPaging="true" AllowSorting="true">
             <Columns>
@@ -80,6 +80,7 @@
 }
 else
 {
+    //Feilmelding
     <RadzenAlert Title="Ingen data å vise." style="width: 100%" AlertStyle="AlertStyle.Warning" Variant="Variant.Flat" Shade="Shade.Lighter" AllowClose=false>
         Last opp en fil (TXT, CSV eller JSON)
     </RadzenAlert>
@@ -97,7 +98,7 @@ else
     [Inject]
     public IJSRuntime JSRuntime { get; set; }
 
-    //1
+    //Metode for å opplastning av en bestemt-fil 
     public async Task lastOppFil(InputFileChangeEventArgs e)
     {
         try
@@ -118,7 +119,8 @@ else
             throw; // Kaster unntaket videre
         }
     }
-
+   
+    //Metode for å laste opp en CSV- eller TXT-fil
     public async Task<List<BrukerRespons>> Filer(IBrowserFile fil)
     {
         if (fil is null)
@@ -175,6 +177,7 @@ else
         return idListe;
     }
 
+    //Metode for å laste opp en JSON-fil
     public async Task<List<BrukerRespons>> FilerJson(IBrowserFile fil)
     {
         if (fil == null)
@@ -192,7 +195,13 @@ else
                 string jsonContent = await leser.ReadToEndAsync();
                 List<BrukerRespons> brukerListe = JsonConvert.DeserializeObject<List<BrukerRespons>>(jsonContent);
                 // Samler gyldige IDer
-                var gyldigId = brukerListe.Where(b => int.TryParse(b.Id, out _)).Select(b => b.Id).ToList();
+
+                var gyldigId = new List<String>();
+                foreach (var bruker in brukerListe)
+                {
+                    gyldigId.Add(bruker.Id);
+                }          
+                
                 if (gyldigId.Any() && fil != null)
                 {
                     //komma-separert streng
@@ -218,7 +227,7 @@ else
         }
         return gyldigeBrukere;
     }
-    //3
+    
     //Sjekker om filen samsvarer med riktige typer-filer
     public async Task Opplastning(IBrowserFile fil)
     {
@@ -259,15 +268,16 @@ else
         }
     }
 
+    //Nedlastning av CSV/TXT med if-setninger
     public async Task Eksporter(string fileExtension)
     {
         try
         {
-            if (BrukerRes != null && BrukerRes.Any())
-            {
+        if (BrukerRes != null && BrukerRes.Any())
+        {
                 string filNavn = $"data.{fileExtension}";
                 // Eksporter til CSV-fil
-                if (fileExtension.ToLower() == "csv")
+            if (fileExtension.ToLower() == "csv")
                 {
                     using (StreamWriter skriver = new StreamWriter(filNavn, false, Encoding.UTF8))
                     {
@@ -278,12 +288,12 @@ else
                             await skriver.WriteLineAsync(linjePerBruker);
                         }
                     }
-                    string innhold = await File.ReadAllTextAsync(filNavn, Encoding.UTF8);
+                    string innhold = await File.ReadAllTextAsync(filNavn);
                     await JsRuntimeMetode(filNavn, innhold);
-                }
+            }
                 // Eksporter til TXT-fil
-                else if (fileExtension.ToLower() == "txt")
-                {
+            else if (fileExtension.ToLower() == "txt")
+            {
                     using (StreamWriter skriver = new StreamWriter(filNavn, false, Encoding.UTF8))
                     {
                         await skriver.WriteLineAsync("id,nyid,fornavn,mellomnavn,etternavn,tlf,brukernavn,passord,epost"); //Pr linje = Bruker med opplysninger
@@ -295,9 +305,9 @@ else
                     }
                     string innhold = await File.ReadAllTextAsync(filNavn, Encoding.UTF8);
                     await JsRuntimeMetode(filNavn, innhold);
-                }
-                Console.WriteLine($"Eksportert til {fileExtension.ToUpper()}.");
             }
+                Console.WriteLine($"Eksportert til {fileExtension.ToUpper()}.");
+        }
             else
             {
                 Console.WriteLine($"Ingen data å eksportere.");
@@ -308,23 +318,19 @@ else
             Console.WriteLine($"Feil ved eksportering: {ex.Message}");
         }
     }
-
+    
+    //Nedlastning av CSV/TXT med Serializering
     public async Task EksporterJson()
     {
         try
         {
             if (BrukerRes != null && BrukerRes.Any())
             {
-                // Oppretter liste med anonyme objekter fra ansatte-data
+                // Oppretter liste med anonyme objekter basert på ansatte-data
                 var jsonData = BrukerRes;
-                // Serialiserer til json
+                // Serialisere listen til JSON
                 var jsonString = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
                 await JsRuntimeMetode("data.json", jsonString);
-                Console.WriteLine(jsonString, jsonData);
-            }
-            else
-            {
-                Console.WriteLine("Ingenting");
             }
         }
         catch (Exception ex)
@@ -333,7 +339,7 @@ else
         }
     }
 
-    //Lager metode, slik at jeg kan bare kalle på metoden i eksporter metodene
+    //Lager metode, slik at jeg kan bare kalle på metoden i eksporter/nedlastnings metodene
     public async Task JsRuntimeMetode(string type, string konverter)
     {
         if (JSRuntime != null)
@@ -348,13 +354,11 @@ else
     }
 
      /*KILDER
-      * 
      https://blazor.radzen.com/docs/guides/getting-started/use-component.html?tabs=constant = Radzen komponenter
      https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.components.forms.ibrowserfile?view=aspnetcore-8.0 = IBrowserFile
      https://www.newtonsoft.com/json = Serialisering og deserialisering av JSON
      https://learn.microsoft.com/en-us/dotnet/api/microsoft.jsinterop.jsruntime?view=aspnetcore-8.0 = JSRuntime + InvokeVoidAsync
      https://learn.microsoft.com/en-us/dotnet/api/system.io.stream?view=net-8.0 og https://learn.microsoft.com/en-us/dotnet/standard/io/ StreamWriter + StreamReader (Lignende pensum fra PRO1000)
-
     */
 }
 
