@@ -36,8 +36,8 @@ builder.Services.AddAuth0WebAppAuthentication(options =>
     options.Domain = domain;
    options.ClientId = clientid;
 
-   //   options.Domain = builder.Configuration["Auth0:Domain"];
-   //  options.ClientId = builder.Configuration["Auth0:ClientId"];
+    // options.Domain = builder.Configuration["Auth0:Domain"];
+    // options.ClientId = builder.Configuration["Auth0:ClientId"];
 
 });
 
@@ -74,16 +74,16 @@ app.MapGet("/Account/Login", async (HttpContext context, string redirectUri = "/
     Console.WriteLine("Login");
 });
 
-app.MapGet("/Account/Logout", async (HttpContext context, string redirectUri = "/") =>
+app.MapGet("/Account/Logout", async (HttpContext context) =>
 {
     var authenticationProperties = new LogoutAuthenticationPropertiesBuilder()
-    .WithRedirectUri(redirectUri)
+    .WithRedirectUri("/")
     .Build();
 
     await context.SignOutAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
     await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-    return new RedirectResult(redirectUri);
+    return new RedirectResult("/");
 });
 
 app.UseHttpsRedirection();
