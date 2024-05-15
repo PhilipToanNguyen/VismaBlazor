@@ -2,18 +2,7 @@
 @inject IConfiguration config
 @inject VismaBlazor.HttpClientPost HttpClientPost
 @inject NavigationManager NavigationManager
-@using Microsoft.AspNetCore.Authorization
-@using Newtonsoft.Json
-@using Radzen
-@using Radzen.Blazor
-@using Microsoft.JSInterop;
-@using System.IO
-@using System.Globalization
-@using System.Text
-@using Microsoft.AspNetCore.Components.Forms;
-@using Models
 @attribute [Authorize]
-@using System.Linq
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @attribute [StreamRendering]
 
