@@ -16,6 +16,9 @@ namespace VismaBlazor
     public class HttpClientPost
     {
         private List<BrukerRespons>? BrukerRes;
+
+        ErrorMelding ErrorMelding = new ErrorMelding();
+
         public async Task Post(int Ids, string domene)
         {
             var token = await HentAuth();
@@ -42,6 +45,7 @@ namespace VismaBlazor
                     Console.WriteLine("BOOM BABY");
                     BrukerRes = JsonConvert.DeserializeObject<List<BrukerRespons>>(response);
                         Console.WriteLine(res.StatusCode);
+                        ErrorMelding.Melding = res.Headers.GetValues("melding").FirstOrDefault();
                     }
 
                 else
@@ -83,6 +87,7 @@ namespace VismaBlazor
                     Console.WriteLine("BOOM BABY");
                     BrukerRes = JsonConvert.DeserializeObject<List<BrukerRespons>>(response);
                         Console.WriteLine(res.StatusCode);
+                        ErrorMelding.Melding = res.Headers.GetValues("melding").FirstOrDefault();
 
                     }
                 else
@@ -143,6 +148,11 @@ namespace VismaBlazor
         public List<BrukerRespons> HentBrukerResponse()
         {
             return BrukerRes;
+        }
+
+        public string HentErrorMelding()
+        {
+            return ErrorMelding.Melding;
         }
     }
 

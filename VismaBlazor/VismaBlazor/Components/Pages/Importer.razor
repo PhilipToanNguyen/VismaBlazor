@@ -2,9 +2,10 @@
 @inject IConfiguration config
 @inject VismaBlazor.HttpClientPost HttpClientPost
 @inject NavigationManager NavigationManager
-@attribute [Authorize]
+
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @attribute [StreamRendering]
+@attribute [Authorize]
 
 <PageTitle>Importer fil</PageTitle>
 
@@ -67,12 +68,14 @@
         </RadzenStack>
     </div>
 }
-else
+
+@if (errorMelding != null)
 {
-    //Feilmelding
-    <RadzenAlert Title="Ingen data å vise." style="width: 100%" AlertStyle="AlertStyle.Warning" Variant="Variant.Flat" Shade="Shade.Lighter" AllowClose=false>
-        Last opp en fil (TXT, CSV eller JSON)
-    </RadzenAlert>
+    <div class="pb-4">
+        <RadzenAlert Title="Response Melding" AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter">
+            @errorMelding
+        </RadzenAlert>
+    </div>
 }
 
 
@@ -82,6 +85,7 @@ else
     public List<BrukerRespons>? BrukerRes;
     private List<string> feilError = new List<string>();
     public IBrowserFile? fil;
+    private string? errorMelding;
 
     // Inject IJSRuntime
     [Inject]
@@ -150,6 +154,7 @@ else
                         if (HttpClientPost.HentBrukerResponse() != null)
                         {
                             idListe.AddRange(HttpClientPost.HentBrukerResponse());
+                            errorMelding = HttpClientPost.HentErrorMelding();
                         }
                         Console.WriteLine("Brukerdata for alle IDer lagt til."); //Sjekk ved testing
                     }
@@ -204,6 +209,7 @@ else
                     }
                     // metode for å hente responsen
                     gyldigeBrukere = HttpClientPost.HentBrukerResponse();
+                    errorMelding = HttpClientPost.HentErrorMelding();
                 }
             }
         }

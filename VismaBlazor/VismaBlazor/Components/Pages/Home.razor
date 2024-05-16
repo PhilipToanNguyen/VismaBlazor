@@ -15,10 +15,10 @@
 @using Models
 @using Microsoft.AspNetCore.Authorization
 @using System.Linq
-@attribute [Authorize]
+
 @rendermode @(new InteractiveServerRenderMode(prerender: true))
 @attribute [StreamRendering]
-
+@attribute [Authorize]
 
 <PageTitle>Hjem</PageTitle>
 
