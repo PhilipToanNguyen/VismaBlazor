@@ -108,7 +108,7 @@ else
             throw; // Kaster unntaket videre
         }
     }
-   
+
     //Metode for å laste opp en CSV- eller TXT-fil
     public async Task<List<BrukerRespons>> Filer(IBrowserFile fil)
     {
@@ -131,8 +131,9 @@ else
                     if (startLinje)
                     {
                         startLinje = false;
-                        continue;
+                        continue;                    
                     }
+
                     alleID.AddRange(linje.Split(',').Where(id => !string.IsNullOrWhiteSpace(id)));
                 }
                 if (alleID.Count > 0)
@@ -258,15 +259,15 @@ else
     }
 
     //Nedlastning av CSV/TXT med if-setninger
-    public async Task Eksporter(string fileExtension)
+    public async Task Eksporter(string filtype)
     {
         try
         {
         if (BrukerRes != null && BrukerRes.Any())
         {
-                string filNavn = $"data.{fileExtension}";
+                string filNavn = $"data.{filtype}";
                 // Eksporter til CSV-fil
-            if (fileExtension.ToLower() == "csv")
+            if (filtype.ToLower() == "csv")
                 {
                     using (StreamWriter skriver = new StreamWriter(filNavn, false, Encoding.UTF8))
                     {
@@ -281,7 +282,7 @@ else
                     await JsRuntimeMetode(filNavn, innhold);
             }
                 // Eksporter til TXT-fil
-            else if (fileExtension.ToLower() == "txt")
+            else if (filtype.ToLower() == "txt")
             {
                     using (StreamWriter skriver = new StreamWriter(filNavn, false, Encoding.UTF8))
                     {
@@ -295,7 +296,7 @@ else
                     string innhold = await File.ReadAllTextAsync(filNavn, Encoding.UTF8);
                     await JsRuntimeMetode(filNavn, innhold);
             }
-                Console.WriteLine($"Eksportert til {fileExtension.ToUpper()}.");
+                Console.WriteLine($"Eksportert til {filtype.ToUpper()}.");
         }
             else
             {
