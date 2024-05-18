@@ -34,16 +34,14 @@ builder.Services.AddRazorComponents()
 builder.Services.AddAuth0WebAppAuthentication(options =>
 {
     options.Domain = domain;
-   options.ClientId = clientid;
+    options.ClientId = clientid;
 
     // options.Domain = builder.Configuration["Auth0:Domain"];
-    // options.ClientId = builder.Configuration["Auth0:ClientId"];
-
+    //options.ClientId = builder.Configuration["Auth0:ClientId"];
 });
 
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
-
 
 builder.Services.AddScoped<HttpClientPost>();
 
