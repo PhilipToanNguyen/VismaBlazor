@@ -129,19 +129,8 @@
             {
                 var alleID = new List<string>();
                 string linje;
-                bool startLinje = true;
-                var fileExtension = Path.GetExtension(fil.Name)?.ToLower();
                 while ((linje = await leser.ReadLineAsync()) != null)
                 {
-                    // Sjekker om filen er av typen txt, hvis ikke hopper leseren over første linje
-                    if (fileExtension != ".txt")
-                    {
-                        if (startLinje)
-                        {
-                            startLinje = false;
-                            continue;
-                        }
-                    }
                     alleID.AddRange(linje.Split(',').Where(id => !string.IsNullOrWhiteSpace(id)));
                 }
                 if (alleID.Count > 0)
