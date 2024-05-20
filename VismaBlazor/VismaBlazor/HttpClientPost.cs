@@ -13,12 +13,14 @@ using System.Linq.Dynamic.Core.Tokenizer;
 
 namespace VismaBlazor
 {
+    //Klasse for å sende post requests til API og hente autogenererte brukere
     public class HttpClientPost
     {
         private List<BrukerRespons>? BrukerRes;
 
         ErrorMelding ErrorMelding = new ErrorMelding();
 
+        //Post metode for å sende antall id til API som skal autogenereres
         public async Task Post(int Ids, string domene)
         {
             var token = await HentAuth();
@@ -58,6 +60,7 @@ namespace VismaBlazor
                 }
             }
         }
+        //Post metode for å sende flere id som skrives manuelt til API som skal autogenereres
         public async Task PostFlereId(string flereIds, string domene) 
         {
             var token = await HentAuth();
@@ -99,6 +102,7 @@ namespace VismaBlazor
             }
             }
         }
+        //Post metode for å sende forespørsel om token og få response for å hente token som derreter sendes sammen med andre requests
         public async Task<string> HentAuth()
         {
             using (var client = new HttpClient())

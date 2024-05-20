@@ -1,2 +1,0 @@
-id,nyid,fornavn,mellomnavn,etternavn,tlf,brukernavn,passord,epost
-2,1,Stiv,,Macadamianøtt,66591864,StMa2,Krokodille87,StMa2@s

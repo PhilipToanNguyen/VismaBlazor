@@ -55,6 +55,7 @@ namespace VismaBlazor.AuthSync
             return true;
         }
     
+        //bytter ut gammel state med ny state
         private void OnAuthStateChange(Task<AuthenticationState> authStateTask)
         {
             _authStateTask = authStateTask;
@@ -66,19 +67,15 @@ namespace VismaBlazor.AuthSync
         {
             if (_authStateTask is null)
             {
-                throw new UnreachableException("Fonker ikke");
-
+                throw new UnreachableException("Error: AuthState er null");
             }
             var authState = await _authStateTask;
             var principal = authState.User;
-
             if (principal.Identity?.IsAuthenticated == true)
             {
                 var userId = principal.FindFirstValue(_identityOptions.ClaimsIdentity.UserIdClaimType);
                 var name = principal.FindFirstValue(_identityOptions.ClaimsIdentity.UserNameClaimType);
                 var email = principal.FindFirstValue(_identityOptions.ClaimsIdentity.EmailClaimType);
-
-
                 if (userId != null && name != null && email != null)
                 {
                     _status.PersistAsJson(nameof(AuthBruker), new AuthBruker
@@ -87,8 +84,6 @@ namespace VismaBlazor.AuthSync
                         BrukerNavn = name,
                         BrukerEpost = email,
                     });
-
-
                 }
             }
         }

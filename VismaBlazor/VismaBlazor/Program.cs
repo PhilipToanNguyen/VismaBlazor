@@ -10,18 +10,20 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
-
+// variebler for å hente config fra appsettings.json
+/*
 Environment.SetEnvironmentVariable("Audience", builder.Configuration.GetSection("Auth0").GetSection("Audience").Value);
 Environment.SetEnvironmentVariable("Domain", builder.Configuration.GetSection("Auth0").GetSection("Domain").Value);
 Environment.SetEnvironmentVariable("ClientId", builder.Configuration.GetSection("Auth0").GetSection("ClientId").Value);
 Environment.SetEnvironmentVariable("ClientSecret", builder.Configuration.GetSection("Auth0").GetSection("ClientSecret").Value);
+*/
 
-/*
+//variebler for å hente config fra heroku
 var audience = Environment.GetEnvironmentVariable("Audience");
 var domain = Environment.GetEnvironmentVariable("Domain");
 var clientid = Environment.GetEnvironmentVariable("ClientId");
 var clientsecret = Environment.GetEnvironmentVariable("ClientSecret");
-*/
+
 
 
 //legger til services for razor components og interactive components siden dette er server side app
@@ -42,6 +44,7 @@ builder.Services.AddAuth0WebAppAuthentication(options =>
 });
 
 builder.Services.AddCascadingAuthenticationState();
+
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
 
 builder.Services.AddScoped<HttpClientPost>();
@@ -52,6 +55,7 @@ var app = builder.Build();
 //flytt denne til under logout vis ikke funker
 app.UseHttpsRedirection();
 
+//standard error handling som kom stock med template
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -96,10 +100,10 @@ app.UseAntiforgery();
 
 app.UseForwardedHeaders(new ForwardedHeadersOptions { ForwardedHeaders = ForwardedHeaders.XForwardedProto });
 
+//setter opp routing for razor components og interactive components
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
-    
     .AddInteractiveServerRenderMode();
 
-
+//kjører appen
 app.Run();

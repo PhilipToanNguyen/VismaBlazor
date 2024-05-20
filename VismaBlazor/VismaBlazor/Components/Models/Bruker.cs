@@ -2,6 +2,7 @@
 
 namespace VismaBlazor.Models
 {
+    //Data som hentes fra API
     public class BrukerRespons
     {
         public string NyId { get; set; } = string.Empty;
@@ -16,7 +17,7 @@ namespace VismaBlazor.Models
 
 
     }
-
+    //Error melding fra api
     public class ErrorMelding
     {
         public string Melding { get; set; } = string.Empty;

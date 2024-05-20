@@ -53,6 +53,7 @@
 
     private Task<AuthenticationState>? authenticationState { get; set; }
 
+    //Henter brukernavn fra authenticationState
     protected override async void OnInitialized()
     {
         if (authenticationState is not null)
