@@ -9,7 +9,7 @@ using System.Security.Claims;
 
 namespace VismaBlazor.AuthSync
 {
-    //for sync til application med auth etter login
+    //for sync til application med auth etter login Validere etter 60min
     public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingServerAuthenticationStateProvider
     {
         //legge til metodene for å hente brukerinfo
@@ -19,9 +19,10 @@ namespace VismaBlazor.AuthSync
 
         
         private readonly PersistingComponentStateSubscription _subscription;
-
+        
         private Task<AuthenticationState>? _authStateTask;
 
+        //henter logger, scope, state og options
         public PersistingRevalidatingAuthenticationStateProvider(ILoggerFactory loggerFactory, IServiceScopeFactory scope, PersistentComponentState state, IOptions<IdentityOptions> options) : base(loggerFactory)
         {
             _scope = scope;
@@ -33,6 +34,7 @@ namespace VismaBlazor.AuthSync
 
         }
 
+        //hvor ofte skal den sjekke om brukeren er logget inn
         protected override TimeSpan RevalidationInterval => TimeSpan.FromMinutes(60);
 
         protected override async Task<bool> ValidateAuthenticationStateAsync(AuthenticationState authState, CancellationToken cancellationToken)
@@ -43,6 +45,7 @@ namespace VismaBlazor.AuthSync
        
         }
 
+        //validerer securitystamp for å sjekke om claims er riktig
         private bool ValiderSecurityStampAsync(ClaimsPrincipal principal)
         {
             if (principal.Identity?.IsAuthenticated is false)
@@ -51,13 +54,14 @@ namespace VismaBlazor.AuthSync
             }
             return true;
         }
-
+    
         private void OnAuthStateChange(Task<AuthenticationState> authStateTask)
         {
             _authStateTask = authStateTask;
             
         }
 
+        //henter brukerinfo og lagrer i state
         private async Task onPersistingAsync()
         {
             if (_authStateTask is null)
@@ -73,18 +77,15 @@ namespace VismaBlazor.AuthSync
                 var userId = principal.FindFirstValue(_identityOptions.ClaimsIdentity.UserIdClaimType);
                 var name = principal.FindFirstValue(_identityOptions.ClaimsIdentity.UserNameClaimType);
                 var email = principal.FindFirstValue(_identityOptions.ClaimsIdentity.EmailClaimType);
-                string? accessToken = principal.Claims.FirstOrDefault(c => c.Type == "access_token")?.Value;
-                Console.WriteLine(accessToken);
 
 
-                if (userId != null && name != null && email != null && accessToken != null)
+                if (userId != null && name != null && email != null)
                 {
                     _status.PersistAsJson(nameof(AuthBruker), new AuthBruker
                     {
                         BrukerId = userId,
                         BrukerNavn = name,
                         BrukerEpost = email,
-                        BrukerToken = accessToken
                     });
 
 
@@ -92,6 +93,7 @@ namespace VismaBlazor.AuthSync
             }
         }
 
+        //kaster exception hvis den ikke får tak i brukerinfo
         protected override void Dispose(bool disposing)
         {
            _subscription.Dispose();
@@ -101,9 +103,10 @@ namespace VismaBlazor.AuthSync
 
 
 
-
+        //https://auth0.com/blog/auth0-authentication-blazor-web-apps/
+        //https://github.com/dotnet/aspnetcore/blob/main/src/ProjectTemplates/Web.ProjectTemplates/content/BlazorWeb-CSharp/BlazorWeb-CSharp/Components/Account/PersistingRevalidatingAuthenticationStateProvider.cs#L103
 
 
     }
-    }
+}
     

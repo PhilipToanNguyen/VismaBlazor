@@ -111,6 +111,7 @@
 }
 
 @code {
+    //variabler
     private int ids;
     private string? flereids { get; set; }
     private string? value;
@@ -120,30 +121,31 @@
     private Boolean vismanuellgen { get; set; }
     private Boolean? error { get; set; }
     private Boolean load { get; set; }
-
+    
+    //Henter verdien fra inputfeltet til antall ID
     void OnChange(string value)
     {
         ids = int.Parse(value);
     }
-
+    //setter manuell generering til true slik at det vises på siden
     protected override async Task OnInitializedAsync()
     {
       vismanuellgen = true;
     }
 
+    //setter visantidgen til true slik at det vises på siden og setter vismanuellgen til false
     private void visantid() {
         visantidgen = true;
         vismanuellgen = false;
-
     }
-
+    //setter vismanuellgen til true slik at det vises på siden og setter visantidgen til false
     private void vismanuell() {
         vismanuellgen = true;
         visantidgen = false;
     }
 
     public IdList[]? idobject;
-
+    //Sender manuelt skrevne ID'er til HttpClientPost som kjører post metoden
     public async Task SendIdManuell()
     {
         if (domain != null && flereids != null)
@@ -156,7 +158,7 @@
             error = true;
         }
     }
-
+    //sender antall ID'er til HttpClientPost som kjører post metoden
     public async Task SendIdAuto()
     {
         if (domain2 != null && ids != 0)
