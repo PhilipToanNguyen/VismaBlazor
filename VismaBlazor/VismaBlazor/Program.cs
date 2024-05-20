@@ -79,16 +79,16 @@ app.MapGet("/account/login", async (HttpContext context, string redirectUri = "/
     Console.WriteLine("Login");
 });
 //bruker logout sender logout request til auth0 bygger logout authentication properties og logger ut (funker på hosted versjon men refresher ikke siden som på localhost)
-app.MapGet("/account/logout", async (HttpContext context) =>
+app.MapGet("/account/logout", async (HttpContext context, string redirectUri = "/") =>
 {
     var authenticationProperties = new LogoutAuthenticationPropertiesBuilder()
-    .WithRedirectUri("/")
+    .WithRedirectUri(redirectUri)
     .Build();
 
     await context.SignOutAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
     await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-    return new RedirectResult("/");
+    return new RedirectResult(redirectUri);
 });
 
 

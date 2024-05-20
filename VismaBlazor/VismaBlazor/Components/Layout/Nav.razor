@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @using Radzen
 @using Radzen.Blazor
+@inject NavigationManager NavigationManager
 
 <RadzenLayout>
     <RadzenHeader class="bg-white rz-p-2">
@@ -26,7 +27,7 @@
             <RadzenPanelMenuItem Text="Hjem" Icon="home" Path="" />
             <RadzenPanelMenuItem Text="Import" Icon="file_upload" Path="importer" />
             <RadzenPanelMenuItem Text="Generator" Icon="create" Path="generator" />
-            <RadzenPanelMenuItem Text="Logg ut" Icon="logout" Path="/account/logout" />
+            <RadzenPanelMenuItem Text="Logg ut" Icon="logout" Path="/account/logout" Click="@onLogout" />
         </RadzenPanelMenu>
     </RadzenSidebar>
 
@@ -52,6 +53,11 @@
     [CascadingParameter]
 
     private Task<AuthenticationState>? authenticationState { get; set; }
+
+    public void onLogout()
+    {
+        NavigationManager.NavigateTo("account/logout", true);
+    }
 
     //Henter brukernavn fra authenticationState
     protected override async void OnInitialized()
