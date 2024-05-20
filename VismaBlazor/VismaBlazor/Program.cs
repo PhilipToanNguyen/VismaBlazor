@@ -36,11 +36,11 @@ builder.Services.AddRazorComponents()
 //legger til auth0 webapp authentication (med config fra appsettings.json eller config fra heroku i hosted versjon)
 builder.Services.AddAuth0WebAppAuthentication(options =>
 {
-    //options.Domain = domain;
-    //options.ClientId = clientid;
+    options.Domain = domain;
+    options.ClientId = clientid;
 
-    options.Domain = builder.Configuration["Auth0:Domain"];
-    options.ClientId = builder.Configuration["Auth0:ClientId"];
+    //options.Domain = builder.Configuration["Auth0:Domain"];
+    //options.ClientId = builder.Configuration["Auth0:ClientId"];
 });
 
 builder.Services.AddCascadingAuthenticationState();
@@ -69,7 +69,7 @@ else
 }
 
 //bruker login sender login request til auth0 bygger login authentication properties
-app.MapGet("/Account/Login", async (HttpContext context, string redirectUri = "/") =>
+app.MapGet("/account/login", async (HttpContext context, string redirectUri = "/") =>
 {
     var authenticationProperties = new LoginAuthenticationPropertiesBuilder()
     .WithRedirectUri(redirectUri)
@@ -79,7 +79,7 @@ app.MapGet("/Account/Login", async (HttpContext context, string redirectUri = "/
     Console.WriteLine("Login");
 });
 //bruker logout sender logout request til auth0 bygger logout authentication properties og logger ut (funker på hosted versjon men refresher ikke siden som på localhost)
-app.MapGet("/Account/Logout", async (HttpContext context) =>
+app.MapGet("/account/logout", async (HttpContext context) =>
 {
     var authenticationProperties = new LogoutAuthenticationPropertiesBuilder()
     .WithRedirectUri("/")
