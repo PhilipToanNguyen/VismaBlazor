@@ -2,9 +2,9 @@
 @inject IConfiguration config
 @inject VismaBlazor.HttpClientPost HttpClientPost
 @inject NavigationManager NavigationManager
-
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @attribute [StreamRendering]
+
 @attribute [Authorize]
 
 <PageTitle>Importer fil</PageTitle>
