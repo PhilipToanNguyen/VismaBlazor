@@ -3,6 +3,8 @@
 @inject IConfiguration config
 @inject VismaBlazor.HttpClientPost HttpClientPost
 @inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.Components.Authorization
+@inject LoginStatus loginStatus;
 @using Newtonsoft.Json
 @using Radzen
 @using Radzen.Blazor
@@ -14,6 +16,7 @@
 @using Models
 @using Microsoft.AspNetCore.Authorization
 @using System.Linq
+@using VismaBlazor.AuthSync
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @attribute [StreamRendering]
 @attribute [Authorize]
@@ -36,6 +39,36 @@
 </RadzenRow>
 
 @code {
+        [CascadingParameter]
+
+        private Task<AuthenticationState>? authenticationState { get; set; }
+    
+        protected override async Task OnInitializedAsync()
+    {
+
+
+    //Henter brukernavn fra authenticationState
+
+        if (authenticationState is not null)
+        {
+            var state = await authenticationState;
+
+
+            if (state.User.Identity.IsAuthenticated)
+            {
+                var id = state.User.Claims
+                      .Where(c => c.Type.Equals("sid"))
+                      .Select(c => c.Value)
+                      .FirstOrDefault();
+
+                if (id != null) loginStatus.Addid(id);
+            }
+        }
+        await base.OnInitializedAsync();
+    }
+
+
+
     //Navigerer til Importer siden
     private void ImporterPage() 
     { 

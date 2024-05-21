@@ -35,7 +35,7 @@ namespace VismaBlazor.AuthSync
         }
 
         //hvor ofte skal den sjekke om brukeren er logget inn
-        protected override TimeSpan RevalidationInterval => TimeSpan.FromMinutes(60);
+        protected override TimeSpan RevalidationInterval => TimeSpan.FromSeconds(10);
 
         protected override async Task<bool> ValidateAuthenticationStateAsync(AuthenticationState authState, CancellationToken cancellationToken)
         {
@@ -55,7 +55,7 @@ namespace VismaBlazor.AuthSync
             return true;
         }
     
-        //bytter ut gammel state med ny state
+        //legger til bruker
         private void OnAuthStateChange(Task<AuthenticationState> authStateTask)
         {
             _authStateTask = authStateTask;
@@ -87,16 +87,6 @@ namespace VismaBlazor.AuthSync
                 }
             }
         }
-
-        //kaster exception hvis den ikke får tak i brukerinfo
-        protected override void Dispose(bool disposing)
-        {
-           _subscription.Dispose();
-            AuthenticationStateChanged -= OnAuthStateChange;
-            base.Dispose(disposing);
-        }
-
-
 
         //https://auth0.com/blog/auth0-authentication-blazor-web-apps/
         //https://github.com/dotnet/aspnetcore/blob/main/src/ProjectTemplates/Web.ProjectTemplates/content/BlazorWeb-CSharp/BlazorWeb-CSharp/Components/Account/PersistingRevalidatingAuthenticationStateProvider.cs#L103
