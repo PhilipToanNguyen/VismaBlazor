@@ -88,11 +88,10 @@ namespace VismaBlazor.AuthSync
                 }
             }
         }
-
-        //https://auth0.com/blog/auth0-authentication-blazor-web-apps/
-        //https://github.com/dotnet/aspnetcore/blob/main/src/ProjectTemplates/Web.ProjectTemplates/content/BlazorWeb-CSharp/BlazorWeb-CSharp/Components/Account/PersistingRevalidatingAuthenticationStateProvider.cs#L103
-
-
     }
 }
-    
+//Kilder
+//https://auth0.com/blog/auth0-authentication-blazor-web-apps/
+//https://github.com/dotnet/aspnetcore/blob/main/src/ProjectTemplates/Web.ProjectTemplates/content/BlazorWeb-CSharp/BlazorWeb-CSharp/Components/Account/PersistingRevalidatingAuthenticationStateProvider.cs#L103
+////////
+
