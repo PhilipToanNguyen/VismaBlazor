@@ -11,19 +11,19 @@ using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 // variebler for å hente config fra appsettings.json
-/*
+
 Environment.SetEnvironmentVariable("Audience", builder.Configuration.GetSection("Auth0").GetSection("Audience").Value);
 Environment.SetEnvironmentVariable("Domain", builder.Configuration.GetSection("Auth0").GetSection("Domain").Value);
 Environment.SetEnvironmentVariable("ClientId", builder.Configuration.GetSection("Auth0").GetSection("ClientId").Value);
 Environment.SetEnvironmentVariable("ClientSecret", builder.Configuration.GetSection("Auth0").GetSection("ClientSecret").Value);
-*/
 
+/*
 //variebler for å hente config fra heroku
 var audience = Environment.GetEnvironmentVariable("Audience");
 var domain = Environment.GetEnvironmentVariable("Domain");
 var clientid = Environment.GetEnvironmentVariable("ClientId");
 var clientsecret = Environment.GetEnvironmentVariable("ClientSecret");
-
+*/
 
 
 //legger til services for razor components og interactive components siden dette er server side app
@@ -35,11 +35,11 @@ builder.Services.AddRazorComponents()
 //legger til auth0 webapp authentication (med config fra appsettings.json eller config fra heroku i hosted versjon)
 builder.Services.AddAuth0WebAppAuthentication(options =>
 {
-    options.Domain = domain;
-    options.ClientId = clientid;
+    //options.Domain = domain;
+    //options.ClientId = clientid;
 
-    //options.Domain = builder.Configuration["Auth0:Domain"];
-    //options.ClientId = builder.Configuration["Auth0:ClientId"];
+    options.Domain = builder.Configuration["Auth0:Domain"];
+    options.ClientId = builder.Configuration["Auth0:ClientId"];
 });
 
 builder.Services.AddCascadingAuthenticationState();
