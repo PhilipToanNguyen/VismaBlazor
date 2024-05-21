@@ -28,7 +28,7 @@
     </div>
     <div id="oppLastning">
         <RadzenButton id="oppLastningID"
-                      Text="Upload"
+                      Text="Generer"
                       Click=@(args => Opplastning(fil))
                       class="d-block pt-2 mt-4 bg-success" />
     </div>
@@ -72,7 +72,7 @@
 @if (errorMelding != null)
 {
     <div class="pb-4">
-        <RadzenAlert Title="Response Melding" AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter">
+        <RadzenAlert Title="Responsmelding" AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter">
             @errorMelding
         </RadzenAlert>
     </div>
