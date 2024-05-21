@@ -31,9 +31,6 @@ builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddSingleton<LoginStatus>();
-
-
 
 //legger til auth0 webapp authentication (med config fra appsettings.json eller config fra heroku i hosted versjon)
 builder.Services.AddAuth0WebAppAuthentication(options =>
