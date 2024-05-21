@@ -39,45 +39,17 @@
 </RadzenRow>
 
 @code {
-        [CascadingParameter]
-
-        private Task<AuthenticationState>? authenticationState { get; set; }
-    
-        protected override async Task OnInitializedAsync()
-    {
-
-
-    //Henter brukernavn fra authenticationState
-
-        if (authenticationState is not null)
-        {
-            var state = await authenticationState;
-
-
-            if (state.User.Identity.IsAuthenticated)
-            {
-                var id = state.User.Claims
-                      .Where(c => c.Type.Equals("sid"))
-                      .Select(c => c.Value)
-                      .FirstOrDefault();
-
-                if (id != null) loginStatus.Addid(id);
-            }
-        }
-        await base.OnInitializedAsync();
-    }
-
 
 
     //Navigerer til Importer siden
     private void ImporterPage() 
     { 
-        NavigationManager.NavigateTo("Importer");
+        NavigationManager.NavigateTo("importer");
     }
     //navigerer til Generator siden
     private void GeneratorPage()
     {
-        NavigationManager.NavigateTo("Generator");
+        NavigationManager.NavigateTo("generator");
     }
 }
 

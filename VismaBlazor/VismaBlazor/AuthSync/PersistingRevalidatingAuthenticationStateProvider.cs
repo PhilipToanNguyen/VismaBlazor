@@ -12,7 +12,7 @@ namespace VismaBlazor.AuthSync
     //for sync til application med auth etter login Validere etter 60min
     public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingServerAuthenticationStateProvider
     {
-        //legge til metodene for å hente brukerinfo
+        
         private readonly IServiceScopeFactory _scope;
         private readonly PersistentComponentState _status;
         private readonly IdentityOptions _identityOptions;
@@ -22,7 +22,7 @@ namespace VismaBlazor.AuthSync
         
         private Task<AuthenticationState>? _authStateTask;
 
-        //henter logger, scope, state og options
+        //Konstruktør for PRASP
         public PersistingRevalidatingAuthenticationStateProvider(ILoggerFactory loggerFactory, IServiceScopeFactory scope, PersistentComponentState state, IOptions<IdentityOptions> options) : base(loggerFactory)
         {
             _scope = scope;
@@ -34,9 +34,10 @@ namespace VismaBlazor.AuthSync
 
         }
 
-        //hvor ofte skal den sjekke om brukeren er logget inn
+        //Velg timespan for revalidering.
         protected override TimeSpan RevalidationInterval => TimeSpan.FromSeconds(10);
 
+        //metode for å validere stamp
         protected override async Task<bool> ValidateAuthenticationStateAsync(AuthenticationState authState, CancellationToken cancellationToken)
         {
             await using var scope = _scope.CreateAsyncScope();
@@ -45,7 +46,7 @@ namespace VismaBlazor.AuthSync
        
         }
 
-        //validerer securitystamp for å sjekke om claims er riktig
+        //returnerer false vis bruker stamp ikke er tilstedet
         private bool ValiderSecurityStampAsync(ClaimsPrincipal principal)
         {
             if (principal.Identity?.IsAuthenticated is false)
@@ -55,7 +56,7 @@ namespace VismaBlazor.AuthSync
             return true;
         }
     
-        //legger til bruker
+        //Oppdaterer _authstatetask med ny bruker info
         private void OnAuthStateChange(Task<AuthenticationState> authStateTask)
         {
             _authStateTask = authStateTask;
