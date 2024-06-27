@@ -29,7 +29,7 @@ namespace VismaBlazor
             { 
             using (var client = new HttpClient())
             {
-                var endpoint = new Uri("https://vismaapi-d8eec0554dca.herokuapp.com/velgAntall?domene=" + domene);
+                var endpoint = new Uri("https://localhost:7290/velgAntall?domene=" + domene);
                     client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
                 var nyIdJson = JsonConvert.SerializeObject(Ids);
@@ -58,7 +58,7 @@ namespace VismaBlazor
             
             using (var client = new HttpClient())
             {
-                var endpoint = new Uri("https://vismaapi-d8eec0554dca.herokuapp.com/velgID?domene=" + domene);
+                var endpoint = new Uri("https://localhost:7290/velgID?domene=" + domene);
                     client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
                 var nyIdJson = JsonConvert.SerializeObject(flereIds);
